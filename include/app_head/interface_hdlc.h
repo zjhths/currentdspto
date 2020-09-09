@@ -47,15 +47,15 @@ typedef struct Hdlc_interface
     unsigned int channel;
     unsigned int recv_fifo;
     unsigned int send_fifo;
-    void (*init)(struct Hdlc_interface* interface, unsigned int channel);
-    void (*send)(struct Hdlc_interface* interface, unsigned char* data,unsigned int length);
-    void(*recv)(struct Hdlc_interface* interface, unsigned char* data,unsigned int* length);     //类似于基类虚函数   函数指针
+    unsigned int (*init)(struct Hdlc_interface* interface, unsigned int channel);
+    unsigned int (*send)(struct Hdlc_interface* interface, unsigned char* data,unsigned int length);
+    unsigned int (*recv)(struct Hdlc_interface* interface, unsigned char* data,unsigned int* length);     //类似于基类虚函数   函数指针
 }Hdlc_interface;
 
 //函数
-void Hdlc_Init(Hdlc_interface* interface, unsigned int channel);
-void Hdlc_Send(Hdlc_interface* interface, unsigned char* data,unsigned int length);
-void Hdlc_Recv(Hdlc_interface* interface, unsigned char* data,unsigned int* length);
+unsigned int Hdlc_Init(Hdlc_interface* interface, unsigned int channel);
+unsigned int Hdlc_Send(Hdlc_interface* interface, unsigned char* data,unsigned int length);
+unsigned int Hdlc_Recv(Hdlc_interface* interface, unsigned char* data,unsigned int* length);
 
 Hdlc_interface* new_hdlc_interface(unsigned int channel);
 #endif /* INCLUDE_APP_HEAD_INTERFACE_HDLC_H_ */

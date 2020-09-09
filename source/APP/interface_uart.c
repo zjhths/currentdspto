@@ -29,13 +29,14 @@ void Uart_Init(Uart_interface* interface, unsigned int channel,unsigned int spee
 
 void Uart_Send(Uart_interface* interface, unsigned char* data,unsigned int length){
     int i=0;
+    unsigned short data_len=0;
 //    Uart_ctrl0_addr(interface->channel)= 0x0000;
 //    Uart_ctrl0_addr(interface->channel)= 0x0055;
     for(i=0;i<length;i++)
     {
         if (fifo_writeable(interface->send_fifo))
         {
-            fifo_write(interface->send_fifo, (void *)&data[i]);
+            fifo_write(interface->send_fifo, (void *)&data[i],&data_len);
         }
     }
 }
@@ -45,6 +46,7 @@ void Uart_Send(Uart_interface* interface, unsigned char* data,unsigned int lengt
 void Uart_Recv(Uart_interface* interface, unsigned char* data,unsigned int* length){
     unsigned int* data_length=length;
     unsigned int i=0;
+    unsigned short data_len=0;
     *data_length =(Uart_Status0_H_addr(interface->channel) >> 4) & 0x000f;
     if(*data_length>10){
         //*data_length=10;
@@ -54,7 +56,7 @@ void Uart_Recv(Uart_interface* interface, unsigned char* data,unsigned int* leng
         data[i] = Uart_Rx_Data0_addr(interface->channel);
         if (fifo_writeable(interface->recv_fifo))
         {
-            fifo_write(interface->recv_fifo, (void *)&data[i]);
+            fifo_write(interface->recv_fifo, (void *)&data[i],&data_len);
         }
     }
 
@@ -63,11 +65,12 @@ void Uart_Recv(Uart_interface* interface, unsigned char* data,unsigned int* leng
 
 void Uart_Interface_Process(Uart_interface* interface){
     unsigned char byte_temp=0,uart_temp=0;;
+    unsigned short data_len=0;
     if (fifo_readable(interface->send_fifo))
     {
         uart_temp = Uart_Status0_L_addr(interface->channel);
         if((uart_temp & 0x0002) == 0){
-            fifo_read(interface->send_fifo, (void *)&byte_temp);
+            fifo_read(interface->send_fifo, (void *)&byte_temp,&data_len);
             Uart_Tx_Data0_addr(interface->channel) = byte_temp;
         }
 

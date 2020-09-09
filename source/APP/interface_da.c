@@ -13,25 +13,25 @@ Da_interface* new_da_interface()
 }
 
 void Da_Init(Da_interface* interface){
-	PID_KP_HH =0xbff0;//电流
-	PID_KP_HL =0x0000;
-	PID_KP_LH =0x0000;
-	PID_KP_LL =0x0000;
-
-	PID_KI_HH=0xbf6b;
-	PID_KI_HL=0x4e81;
-	PID_KI_LH=0xb4e8;
-	PID_KI_LL=0x1b4f;
-
-
-	PID_KD_HH=0x0000;//0
-	PID_KD_HL=0x0000;
-	PID_KD_LH=0x0000;
-	PID_KD_LL=0x0000;
-
-	 DA_CONFIG_SEL=0X0;//kaihuan
-	 WAVE_SEL=0x1;  //changzhi
-	 DA_VI_SEL=0x0;//
+//	PID_KP_HH =0xbff0;//电流
+//	PID_KP_HL =0x0000;
+//	PID_KP_LH =0x0000;
+//	PID_KP_LL =0x0000;
+//
+//	PID_KI_HH=0xbf6b;
+//	PID_KI_HL=0x4e81;
+//	PID_KI_LH=0xb4e8;
+//	PID_KI_LL=0x1b4f;
+//
+//
+//	PID_KD_HH=0x0000;//0
+//	PID_KD_HL=0x0000;
+//	PID_KD_LH=0x0000;
+//	PID_KD_LL=0x0000;
+//
+//	 DA_CONFIG_SEL=0X0;//kaihuan
+//	 WAVE_SEL=0x1;  //changzhi
+//	 DA_VI_SEL=0x0;//
 }
 
 void Da_Send(Da_interface* interface, unsigned char* data,unsigned int length){

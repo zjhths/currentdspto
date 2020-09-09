@@ -58,11 +58,11 @@ int fifo_create(int item_sum, int item_size)
 {
     Fifo *fifo = (Fifo *)malloc(sizeof(Fifo));
     fifo->item_sum = item_sum;
-    fifo->item_size = item_size;
+    fifo->item_size = item_size+2;
     fifo->ptr_write = 0;
     fifo->ptr_read = 0;
     fifo->is_full = false;
-    fifo->fifo_ptr = (void *)malloc(item_sum * item_size);
+    fifo->fifo_ptr = (void *)malloc(item_sum * (item_size+2));
     return (int)fifo;
 }
  
@@ -99,15 +99,15 @@ bool fifo_writeable(int fifo_index)
 * @return false:失败.true:成功
 */
  
-bool fifo_write(int fifo_index, void *data)
+bool fifo_write(int fifo_index, void *data,unsigned short *data_len)
 {
     Fifo *fifo = (Fifo *)fifo_index;
     if (fifo->is_full)
 	{
 		return false;
 	}
-	
-    memcpy((char *)(fifo->fifo_ptr) + fifo->ptr_write * fifo->item_size, data, fifo->item_size);
+    memcpy((char *)(fifo->fifo_ptr) + fifo->ptr_write * fifo->item_size, data_len, 2);
+    memcpy((char *)(fifo->fifo_ptr) + fifo->ptr_write * fifo->item_size+2, data, fifo->item_size-2);
     fifo->ptr_write++;
  
     if (fifo->ptr_write >= fifo->item_sum)
@@ -176,15 +176,15 @@ bool fifo_readable(int fifo_index)
 * @return false: 失败.true: 成功
 */
  
-bool fifo_read(int fifo_index, void *data)
+bool fifo_read(int fifo_index, void *data,unsigned short *data_len)
 {
     Fifo *fifo = (Fifo *)fifo_index;
     if (fifo->ptr_write == fifo->ptr_read && !fifo->is_full)
 	{
 		return false;
 	}
-    
-    memcpy(data, (char *)(fifo->fifo_ptr) + fifo->ptr_read * fifo->item_size, fifo->item_size);
+    memcpy(data_len, (char *)(fifo->fifo_ptr) + fifo->ptr_read * fifo->item_size, 2);
+    memcpy(data, (char *)(fifo->fifo_ptr) + fifo->ptr_read * fifo->item_size+2, fifo->item_size-2);
     fifo->ptr_read++;
     if (fifo->ptr_read >= fifo->item_sum)
 	{

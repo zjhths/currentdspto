@@ -279,8 +279,8 @@
 #define           CHANNEL3_DLY     (*(unsigned short int *)0x620003D8)
 #define           CHANNEL4_DLY     (*(unsigned short int *)0x620003DC)
 #define           CHANNEL5_DLY     (*(unsigned short int *)0x620003E0)
-#define           CHANNEL6_DLY     (*(unsigned short int *)0x620003E0)
-#define           FIFO_RST         (*(unsigned short int *)0x620003E4)
+#define           CHANNEL6_DLY     (*(unsigned short int *)0x620003E4)
+#define           FIFO_RST         (*(unsigned short int *)0x620003E8)
 //二次校正比例系数
 #define           CALIB_PARA_HH     (*(unsigned short int *)0x620003E8)
 #define           CALIB_PARA_HL     (*(unsigned short int *)0x620003EC)

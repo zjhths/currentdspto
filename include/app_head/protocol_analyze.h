@@ -11,7 +11,15 @@
 
 #define HOST_ADDR 0x52
 #define REMOTE_ADDR 0x53
-#define CHANNEL_ADDR 0x41
+#define CHANNEL_ADDR 0x41//0x41~0x44四个通道;
+#define CHANNEL_ALL_ADDR 0x45//0x45全通道；
+
+#define REMOTE_CMD_BEGIN                         0x21
+#define REMOTE_CMD_CURRENT_OUTPUT    0x23
+#define REMOTE_CMD_VOLTAGE_OUTPUT    0x24
+#define REMOTE_CMD_CURRENT_RETURNS  0x25
+#define REMOTE_CMD_VOLTAGE_RETURNS  0x26
+#define REMOTE_CMD_STOP                           0x29
 
 #define ANALYZE_DATA_SIZE 128
 #define AD_DATA_SIZE 400
@@ -23,7 +31,12 @@ typedef enum Analyze_Type
     rest_func,
     recv_ad_cmd_func,
     recv_ad_data_func,
-    set_mode_func
+    set_mode_func,
+
+    remote_begin,
+    remote_output,
+    remote_returns_data,
+    remote_stop
 }Analyze_Type;
 
 
@@ -65,6 +78,12 @@ typedef struct protocol_ad_modle_set_struct
     unsigned char frequncy[4];
     unsigned char amplitude[4];
 }protocol_ad_modle_set_struct;
+//++++++++++++++++外部HDLC命令集++++++++++++++++++++//
+typedef struct protocol_remote_struct
+{
+    protocol_handle_struct m_handle;
+    unsigned char channel_data[4][4];
+}protocol_remote_struct;
 
 
 typedef struct protocol_analyze_interface
@@ -94,6 +113,12 @@ int protocol_rest(protocol_analyze_interface* interface,unsigned char* sources);
 int protocol_recv_ad_cmd(protocol_analyze_interface* interface,unsigned char* sources);
 int protocol_recv_ad_data(protocol_analyze_interface* interface,unsigned char* sources);
 int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sources);
+
+int protocol_remote_begin(protocol_analyze_interface* interface,unsigned char* sources);
+int protocol_remote_output(protocol_analyze_interface* interface,unsigned char* sources);
+int protocol_remote_returns_data(protocol_analyze_interface* interface,unsigned char* sources);
+int protocol_remote_stop(protocol_analyze_interface* interface,unsigned char* sources);
+
 
 protocol_analyze_interface* new_protocol_analyze_interface();
 #endif /* PROTOCOLANALYZE_H_ */

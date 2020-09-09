@@ -123,7 +123,7 @@ int updata_cnt=0;
 int k=0;
 int K=0;
 int cnt=0;
-
+static int ttt[123];
 unsigned short channal_zero[2]={1,32};//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
 /****************************************************************************/
 /*              LOCAL FUNCTION PROTOTYPES                                   */
@@ -199,17 +199,17 @@ void GPIOIntInit(void)
 		IntEnable(C674X_MASK_INT8);
 ////
 //	//INT2	        /*配置GPIO pin (GPIO1[14])为输入*/    VM_spi_int and IM_spi_int
-		        GPIODirModeSet(SOC_GPIO_0_REGS, 31, GPIO_DIR_INPUT);
-			    /*配置GPIO pin 1(GPIO1[14])为上升沿触发中断*/
-			    GPIOIntTypeSet(SOC_GPIO_0_REGS, 31, GPIO_INT_TYPE_RISEDGE);
-			    /*使能GPIO Bank1中断*/
-			    GPIOBankIntEnable(SOC_GPIO_0_REGS, 1);
-				/*将中断向量表的INT6注册为GPIO中断服务程序*/
-				IntRegister(C674X_MASK_INT7, GPIOIsr2);
-				/*映射中断到 DSP可屏蔽中断*/
-				IntEventMap(C674X_MASK_INT7, SYS_INT_GPIO_B1INT);
+//		        GPIODirModeSet(SOC_GPIO_0_REGS, 31, GPIO_DIR_INPUT);
+//			    /*配置GPIO pin 1(GPIO1[14])为上升沿触发中断*/
+//			    GPIOIntTypeSet(SOC_GPIO_0_REGS, 31, GPIO_INT_TYPE_RISEDGE);
+//			    /*使能GPIO Bank1中断*/
+//			    GPIOBankIntEnable(SOC_GPIO_0_REGS, 1);
+//				/*将中断向量表的INT6注册为GPIO中断服务程序*/
+//				IntRegister(C674X_MASK_INT7, GPIOIsr2);
+//				/*映射中断到 DSP可屏蔽中断*/
+//				IntEventMap(C674X_MASK_INT7, SYS_INT_GPIO_B1INT);
 				/*使能DSP可屏蔽中断INT7*/
-				IntEnable(C674X_MASK_INT7);
+				//IntEnable(C674X_MASK_INT7);
 //
 ////	INT3			 /*配置GPIO为输入*/          //AD中断 97  GP6[0]
 				GPIODirModeSet(SOC_GPIO_0_REGS, 97, GPIO_DIR_INPUT);  //  GP6[0]
@@ -379,7 +379,7 @@ static void GPIOIsr3(void)
 	//    unsigned char UART_Test[8];
 	//    Frame_TypeDef mm;
 	//    CAN_ReceiveData(UART_Test,&mm);
-	    if (updata_cnt >=8)
+	    if (updata_cnt >=4)
 	    {
 	        AD_2500_1 = 0x0000000000000000;
 	        ad_data[3]=AD_OUT_DATA_HH ;
@@ -401,11 +401,11 @@ static void GPIOIsr3(void)
 	    }
 //以下函数定义在本文件最下方，需要用哪个就开哪个
 		/*测噪声时用,1s*/
-		NoiseTest();
+		//NoiseTest();
 	    /*测零位和单通道噪声时用,5min*/
-	   // ZeroAndFusionTest();
+	   //ZeroAndFusionTest();
 	    /*相位校正时用*/
-//	    PhaseTest();
+	   // PhaseTest();
 
 
 	    /*在DSPINTC中清除系统中断*/
@@ -770,7 +770,9 @@ static void GPIOPinMuxSetup()
 
 //
 //}
-
+void Test(void){
+memset(ttt,0,8);
+}
 //void iirTest(void)
 //{
 //	//测试iir
@@ -816,6 +818,16 @@ void NoiseTest(void)
 		AD_2500_2 = *(double *)&AD_2500_1;
 		AD_OUT[k] = AD_2500_2/64;
 		AD_2500_2=0;
+
+		          IIR_CH_SEL=channal_zero[1];//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
+		          AD_2500_1 = 0x0000000000000000;
+		          ad_data[3]=IIR_CH_DATA_HH ;
+		          ad_data[2]=IIR_CH_DATA_HL  ;
+		          ad_data[1]=IIR_CH_DATA_LH;
+		          ad_data[0]=IIR_CH_DATA_LL;
+		          AD_2500_2 = *(double *)&AD_2500_1;
+		          AD_iir_SEL[k] = AD_2500_2;
+		          AD_2500_2=0;
 		k+=1;
 	}
 	else
@@ -827,7 +839,7 @@ void NoiseTest(void)
 
 }
 
-
+//
 //void PhaseTest(void)
 //{
 //	/*相位校正时用*/
@@ -884,7 +896,7 @@ void NoiseTest(void)
 //		AD_CHANNAL=0;
 //	}
 //}
-
+//
 
 //void ZeroAndFusionTest(void)
 //{

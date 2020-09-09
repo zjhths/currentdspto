@@ -40,7 +40,7 @@ bool fifo_writeable(int fifo_index);
 * @return false:失败.true:成功
 */
  
-bool fifo_write(int fifo_index, void *data);
+bool fifo_write(int fifo_index, void *data,unsigned short *data_len);
  
 /**
 * @brief fifo批量写入
@@ -67,7 +67,7 @@ bool fifo_readable(int fifo_index);
 * @return false: 失败.true: 成功
 */
  
-bool fifo_read(int fifo_index, void *data);
+bool fifo_read(int fifo_index, void *data,unsigned short *data_len);
  
 /**
 * @brief fifo批量读取

@@ -159,22 +159,45 @@ void SetOutWave()
 {
 //设置输出正弦波
 	//正弦波输出
-
-
-		SIN_AMP_HH=0x3f84;  //0.01  3f847ae147ae147b
-		SIN_AMP_HL=0x7ae1;
-		SIN_AMP_LH=0x47ae;
-		SIN_AMP_LL=0x147b;
+    unsigned int i=0;
+    float m_frequncy=1,m_amplitude=1;
+    double m_double=0.2;
+    double m_Q=0,m_R=1;
+    unsigned int int_frequncy=0;
+    unsigned char *p_float =( unsigned char *)&m_frequncy;
+    float m_amplitude_tag=-50;
+   // CHANNEL_SEL = 0x400;
+//        p_float=( unsigned char *)&m_Q;
+//        QDATA_HH = *(unsigned short *)&p_float[6];
+//        QDATA_HL = *(unsigned short *)&p_float[4];
+//        QDATA_LH = *(unsigned short *)&p_float[2];
+//        QDATA_LL = *(unsigned short *)&p_float[0];
+//
+//        p_float=( unsigned char *)&m_R;
+//        RMDATA_HH = *(unsigned short *)&p_float[6];
+//        RMDATA_HL = *(unsigned short *)&p_float[4];
+//        RMDATA_LH = *(unsigned short *)&p_float[2];
+//        RMDATA_LL = *(unsigned short *)&p_float[0];
+//
+        p_float=( unsigned char *)&m_double;
+        SIN_AMP_HH = *(unsigned short *)&p_float[6];
+        SIN_AMP_HL = *(unsigned short *)&p_float[4];
+        SIN_AMP_LH = *(unsigned short *)&p_float[2];
+        SIN_AMP_LL = *(unsigned short *)&p_float[0];
+//		SIN_AMP_HH=0x3f84;  //0.01  3f847ae147ae147b
+//		SIN_AMP_HL=0x7ae1;
+//		SIN_AMP_LH=0x47ae;
+//		SIN_AMP_LL=0x147b;
 
 	// 	SIN_AMP_HH=0x3fb9;//0.1
 	// 	SIN_AMP_HL=0x9999;
 	// 	SIN_AMP_LH=0x9999;
 	// 	SIN_AMP_LL=0x999a;
 
-	// 	SIN_AMP_HH=0x3ff0;  //1
-	// 	SIN_AMP_HL=0x0000;
-	// 	SIN_AMP_LH=0x0000;
-	// 	SIN_AMP_LL=0x0000;
+//	 	SIN_AMP_HH=0x3ff0;  //1
+//	 	SIN_AMP_HL=0x0000;
+//	 	SIN_AMP_LH=0x0000;
+//	 	SIN_AMP_LL=0x0000;
 
 	// 	SIN_AMP_HH=0x4004;  //2.5
 	// 	SIN_AMP_HL=0x0000;
@@ -186,79 +209,120 @@ void SetOutWave()
 	// 	SIN_AMP_LH=0x0000;
 	// 	SIN_AMP_LL=0x0000;
 
-		SIN_FRQ_H=0x0014;//200HZ:666666 160HZ:51eb85 120HZ:3d70a4 80HZ:28f5c3 40HZ:147ae1
-		SIN_FRQ_L=0x7ae1;
+		SIN_FRQ_H=0x0001;//200HZ:666666 160HZ:51eb85 120HZ:3d70a4 80HZ:28f5c3 40HZ:147ae1
+		SIN_FRQ_L=0x47ae;
 		WAVE_SEL=0x8;//正弦波
 	 	DA_VI_SEL=0x0;//电压1 电流0
 	 	DA_CONFIG_SEL=0X1;
 	 	Delay1();
 
 	// //常值输出
-/*		 WAVE_SEL=0x1;
-		 DA_VI_SEL=0x0;//电压1 电流0
-		 DA_CONFIG_SEL=0x1;//开环输出：0  闭环：1
-		 Delay1();
+//		 WAVE_SEL=0x1;
+//		 DA_VI_SEL=0x0;//电压1 电流0
+//		 DA_CONFIG_SEL=0x1;//开环输出：0  闭环：1
+//		 Delay1();
 //	//	 SET_POINT_HH= 0x0000 ; //0
 //	//	 SET_POINT_HL= 0x0000 ;
 //	//	 SET_POINT_LH= 0x0000 ;
 //	//	 SET_POINT_LL= 0x0000 ;
 //	//	 Delay1();
-		 SET_POINT_HH= 0xbf40 ; //-0.0005 bf40624dd2f1a9fc
-		 SET_POINT_HL= 0x624d ;
-		 SET_POINT_LH= 0xd2f1 ;
-		 SET_POINT_LL= 0xa9fc ;
-		 Delay1();*/
-	//	 SET_POINT_HH= 0xbf60 ; //-0.002 bf60624dd2f1a9fc
-	//	 SET_POINT_HL= 0x624d ;
-	//	 SET_POINT_LH= 0xd2f1 ;
-	//	 SET_POINT_LL= 0xa9fc ;
-	//	 Delay1();
-	//	 SET_POINT_HH= 0xbf84 ; //-0.01 bf847ae147ae147b
-	//	 SET_POINT_HL= 0x7ae1 ;
-	//	 SET_POINT_LH= 0x47ae ;
-	//	 SET_POINT_LL= 0x147b ;
-	//	 Delay1();
-	//	 SET_POINT_HH= 0xbfa9 ; //-0.05 bfa999999999999a
-	//	 SET_POINT_HL= 0x9999 ;
-	//	 SET_POINT_LH= 0x9999 ;
-	//	 SET_POINT_LL= 0x999a ;
-	//	 Delay1();
-	//	 SET_POINT_HH= 0xbfa9 ; //-0.05000025 bfa999a1fd1569f5
-	//	 SET_POINT_HL= 0x99a1 ;
-	//	 SET_POINT_LH= 0xfd15 ;
-	//	 SET_POINT_LL= 0x69f5 ;
-	//	 Delay1();
-	// 	 SET_POINT_HH= 0xbfb9 ; //-0.1 bfb999999999999a
-	// 	 SET_POINT_HL= 0x9999 ;
-	// 	 SET_POINT_LH= 0x9999 ;
-	// 	 SET_POINT_LL= 0x999A ;
-	// 	 Delay1();
-	//	 SET_POINT_HH= 0xbff0 ; //-1 bff0000000000000
-	//	 SET_POINT_HL= 0x0000 ;
-	//	 SET_POINT_LH= 0x0000 ;
-	//	 SET_POINT_LL= 0x0000 ;
-	//	 Delay1();
-	//	 SET_POINT_HH= 0xc004 ;//-2.5 c004000000000000
-	//	 SET_POINT_HL= 0x0000 ;
-	//	 SET_POINT_LH= 0x0000 ;
-	//	 SET_POINT_LL= 0x0000 ;
-	//	 Delay1();
-	//	 SET_POINT_HH= 0x3ff0 ; //1
-	//	 SET_POINT_HL= 0x0000 ;
-	//	 SET_POINT_LH= 0x0000 ;
-	//	 SET_POINT_LL= 0x0000 ;
-	//	 DA_CONFIG_SEL=0x1;//开环输出：0  闭环：1
-	//	 Delay1();
-	//	 SET_POINT_HH= 0x4000 ; //2
-	//	 SET_POINT_HL= 0x0000 ;
-	//	 SET_POINT_LH= 0x0000 ;
-	//	 SET_POINT_LL= 0x0000 ;
-	//	 Delay1();
-	//	 SET_POINT_HH= 0x4012 ; //4.5
-	//	 SET_POINT_HL= 0x0000 ;
-	//	 SET_POINT_LH= 0x0000 ;
-	//	 SET_POINT_LL= 0x0000 ;
-	//	 Delay1();
+//		 SET_POINT_HH= 0xbf40 ; //-0.0005 bf40624dd2f1a9fc
+//		 SET_POINT_HL= 0x624d ;
+//		 SET_POINT_LH= 0xd2f1 ;
+//		 SET_POINT_LL= 0xa9fc ;
+//		 Delay1();
+//		 SET_POINT_HH= 0xbf60 ; //-0.002 bf60624dd2f1a9fc
+//		 SET_POINT_HL= 0x624d ;
+//		 SET_POINT_LH= 0xd2f1 ;
+//		 SET_POINT_LL= 0xa9fc ;
+//		 Delay1();
+//		 SET_POINT_HH= 0xbf84 ; //-0.01 bf847ae147ae147b
+//		 SET_POINT_HL= 0x7ae1 ;
+//		 SET_POINT_LH= 0x47ae ;
+//		 SET_POINT_LL= 0x147b ;
+//		 Delay1();
+//		 SET_POINT_HH= 0xbfa9 ; //-0.05 bfa999999999999a
+//		 SET_POINT_HL= 0x9999 ;
+//		 SET_POINT_LH= 0x9999 ;
+//		 SET_POINT_LL= 0x999a ;
+//		 Delay1();
+//		 SET_POINT_HH= 0xbfa9 ; //-0.05000025 bfa999a1fd1569f5
+//		 SET_POINT_HL= 0x99a1 ;
+//		 SET_POINT_LH= 0xfd15 ;
+//		 SET_POINT_LL= 0x69f5 ;
+//		 Delay1();
+//	 	 SET_POINT_HH= 0xbfb9 ; //-0.1 bfb999999999999a
+//	 	 SET_POINT_HL= 0x9999 ;
+//	 	 SET_POINT_LH= 0x9999 ;
+//	 	 SET_POINT_LL= 0x999A ;
+//	 	 Delay1();
+//		 SET_POINT_HH= 0xbff0 ; //-1 bff0000000000000
+//		 SET_POINT_HL= 0x0000 ;
+//		 SET_POINT_LH= 0x0000 ;
+//		 SET_POINT_LL= 0x0000 ;
+//		 Delay1();
+//		 SET_POINT_HH= 0xc004 ;//-2.5 c004000000000000
+//		 SET_POINT_HL= 0x0000 ;
+//		 SET_POINT_LH= 0x0000 ;
+//		 SET_POINT_LL= 0x0000 ;
+//		 Delay1();
+//		 SET_POINT_HH= 0x3ff0 ; //1
+//		 SET_POINT_HL= 0x0000 ;
+//		 SET_POINT_LH= 0x0000 ;
+//		 SET_POINT_LL= 0x0000 ;
+//		 DA_CONFIG_SEL=0x1;//开环输出：0  闭环：1
+//		 Delay1();
+//		 SET_POINT_HH= 0x4000 ; //2
+//		 SET_POINT_HL= 0x0000 ;
+//		 SET_POINT_LH= 0x0000 ;
+//		 SET_POINT_LL= 0x0000 ;
+//		 Delay1();
+//		 SET_POINT_HH= 0x4012 ; //4.5
+//		 SET_POINT_HL= 0x0000 ;
+//		 SET_POINT_LH= 0x0000 ;
+//		 SET_POINT_LL= 0x0000 ;
+//		 Delay1();
+//	        int_frequncy =128000/m_frequncy/0.5;
+//	        m_double = fabs(m_amplitude*m_amplitude_tag/1000);//电压模式下：value = 目标电压（V）；电流模式下value = -50 * 目标电流（A）
+//	        p_float=( unsigned char *)&int_frequncy;
+//	        SQUARE_HIGH_DUTY=(unsigned short )int_frequncy;
+//	        SQUARE_LOW_DUTY=(unsigned short )int_frequncy;
+//
+//	        p_float=( unsigned char *)&m_double;
+//	        SQUARE_HIGH_AMP_HH=*(unsigned short *)&p_float[6];
+//	        SQUARE_HIGH_AMP_HL=*(unsigned short *)&p_float[4];
+//	        SQUARE_HIGH_AMP_LH=*(unsigned short *)&p_float[2];
+//	        SQUARE_HIGH_AMP_LL=*(unsigned short *)&p_float[0];
+//	        m_double=-m_double;
+//	        SQUARE_LOW_AMP_HH=*(unsigned short *)&p_float[6];
+//	        SQUARE_LOW_AMP_HL=*(unsigned short *)&p_float[4];
+//	        SQUARE_LOW_AMP_LH=*(unsigned short *)&p_float[2];
+//	        SQUARE_LOW_AMP_LL=*(unsigned short *)&p_float[0];
+//	        DA_CONFIG_SEL=0X0;
+//	        WAVE_SEL=2;//zhengxian
+//	        DA_CONFIG_SEL=0X1;
+//	        Delay1();
+//	        CONTROL_BYPASS=0x0;
+//        int_frequncy =128000/m_frequncy/0.5;
+//        m_double = fabs(m_amplitude*m_amplitude_tag/1000);//电压模式下：value = 目标电压（V）；电流模式下value = -50 * 目标电流（A）
+//        p_float=( unsigned char *)&int_frequncy;
+//        SQUARE_HIGH_DUTY=(unsigned short )int_frequncy;
+//        SQUARE_LOW_DUTY=(unsigned short )int_frequncy;
+//
+//        p_float=( unsigned char *)&m_double;
+//        SQUARE_HIGH_AMP_HH=*(unsigned short *)&p_float[6];
+//        SQUARE_HIGH_AMP_HL=*(unsigned short *)&p_float[4];
+//        SQUARE_HIGH_AMP_LH=*(unsigned short *)&p_float[2];
+//        SQUARE_HIGH_AMP_LL=*(unsigned short *)&p_float[0];
+//        m_double=-m_double;
+//        SQUARE_LOW_AMP_HH=*(unsigned short *)&p_float[6];
+//        SQUARE_LOW_AMP_HL=*(unsigned short *)&p_float[4];
+//        SQUARE_LOW_AMP_LH=*(unsigned short *)&p_float[2];
+//        SQUARE_LOW_AMP_LL=*(unsigned short *)&p_float[0];
+//        DA_CONFIG_SEL=0X0;
+//        WAVE_SEL=2;//zhengxian
+//        DA_CONFIG_SEL=0X1;
+//        CONTROL_BYPASS=0x2;
 }
 
 
@@ -318,7 +382,6 @@ int work_status = 0;
 protocol_analyze_interface* p_protocol_analyze;
 int main(void){
 	Board_Init();  //初始化
-	unsigned char UART_test[8]={0x55,0xAA,32,33,34,35,36,37};
 	/*在这里添加主程序*/
 	INT_EN=0X0000;   //初始化配置时先关闭中断使能        1:int0 2:int1 4:int2  8:int3 10:int4
 //初始化配置器件寄存器
@@ -340,28 +403,27 @@ int main(void){
 //da检测配置校准器
 	DAPara_init();
 //相位补偿校正
-//	channaldelay_init();
+	channaldelay_init();
 //数据融合配置权重
 	channal=FUSION_CH_STATUS;
 	FUSION_init();
 //PID配置
 	PID_init();
 //测试用，控制内部模块跳过
-	CONTROL_BYPASS=0x0;//1跳过kalman   2：跳过pid  4:跳过iir 8:跳过final iir 10：跳过1281平均
+	CONTROL_BYPASS= 0x02;//1跳过kalman   2：跳过pid  4:跳过iir 8:跳过final iir 10：跳过1281平均 0xD:只有PID
 //以上初始化配置完毕
 
 
 //设置输出波形（正弦波或直流输出）测试用
-	//SetOutWave();
+	SetOutWave();
 
 
-//开中断
-	INT_EN=0X0018;   //开中断使能        1:int0 2:int1 4:int2  8:int3 10:int4
+
 	asm("   NOP");
 	INT_CLEAR=0xFF;//清中断  先开中断再清中断目的是：AD中断会一直持续使能，只有清中断后下一个中断使能上升沿到来才能进中断。
 
-//	while(1) {
-//
+//while(1) {}
+////
 //	}//JUST FOR TEST
 
 
@@ -384,7 +446,8 @@ int main(void){
 
 	 p_protocol_analyze->da_output_fifo =model_list[3]->up_out_data_list;
 
-
+	 //开中断
+	     INT_EN=0X0018;   //开中断使能        1:int0 2:int1 4:int2  8:int3 10:int4
 
 	while(1)   //按照前面协议指定工作模式循环扫描工作
 	{

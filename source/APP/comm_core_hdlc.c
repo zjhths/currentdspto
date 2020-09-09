@@ -16,13 +16,16 @@ static void Hdlc_speaker(struct Base_Core* core)
 	printf("this is Hdlc Core, core type is :%d\n",core->core_type);
 
 }
-
+unsigned int hdlc_send_data_flg=1;
 static void Hdlc_process(struct Base_Core* core)
 {   unsigned char temp[HDLC_CMD_SIZE];
+    unsigned short data_len=0;
+
     if(fifo_readable(core->up_out_data_list))
     {
-        fifo_read(core->up_out_data_list, (void *)temp);
-        my_hdlc->send(my_hdlc,temp,HDLC_CMD_SIZE);
+        if(hdlc_send_data_flg == 1)
+           fifo_read(core->up_out_data_list, (void *)temp,&data_len);
+         hdlc_send_data_flg = my_hdlc->send(my_hdlc,temp,data_len);
     }
 }
 
