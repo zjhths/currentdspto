@@ -10,7 +10,7 @@
 #include "mnic_nor.h"
 #include "mnic_test.h"
 
-int timer_test_flag=0;
+int timer_test_flag=2;
 int get_init_count = 0;
 int set_init_count = 0;
 

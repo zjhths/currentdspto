@@ -11,7 +11,7 @@
 
 #define HOST_ADDR 0x52
 #define REMOTE_ADDR 0x53
-#define CHANNEL_ADDR 0x41//0x41~0x44四个通道;
+#define CHANNEL_ADDR 0x44//0x41~0x44四个通道;
 #define CHANNEL_ALL_ADDR 0x45//0x45全通道；
 
 #define REMOTE_CMD_BEGIN                         0x21
@@ -21,7 +21,7 @@
 #define REMOTE_CMD_VOLTAGE_RETURNS  0x26
 #define REMOTE_CMD_STOP                           0x29
 
-#define ANALYZE_DATA_SIZE 128
+#define ANALYZE_DATA_SIZE 512
 #define AD_DATA_SIZE 400
 
 

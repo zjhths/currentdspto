@@ -48,7 +48,7 @@ void EMIFAInit(void)
 	 * 3-2:     EMIFA 读写之间最少的EMIFA时钟的周期个数-1：    TA= 3h
 	 * 1-0:     异步设备总线宽度： ASIZE    = 1h;选择16位总线宽度
 	 */
-	waittime_config=EMIFA_ASYNC_WAITTIME_CONFIG(3, 6, 3, 3, 6, 3, 3 );
+	waittime_config=EMIFA_ASYNC_WAITTIME_CONFIG(3, 6, 3, 3, 9, 3, 3 );
 
     /*将waittime_config的值赋给异步2配置寄存器(CE2CFG)*/
 	EMIFAWaitTimingConfig(SOC_EMIFA_0_REGS, EMIFA_CHIP_SELECT_2, waittime_config);

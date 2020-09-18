@@ -54,6 +54,7 @@ void TimerIntInit(void)
 
     /*使能DSP可屏蔽中断INT6*/
     IntEnable(C674X_MASK_INT6);
+    LED_CONFIG=2;
 }
 
 unsigned char GPS_R_Flag=0;
@@ -116,11 +117,11 @@ static void TimerIsr()
 		Data_Exchange_Flag=1;       //数据传输
 
 		}
-	if(timer_count_500ms%500==0)//500ms   2Hz
+	if(timer_count_500ms%3000==0)//500ms   2Hz
 	    {
 		//timer_count_500ms=0;
-		timer_test_flag=1;
-//		LED_CONFIG ^= 0x01;                //闪灯
+		timer_test_flag ^= 1;
+		//LED_CONFIG = timer_test_flag;             //闪灯
 	    }
 	if(timer_count_15s%15000==0)
 	{

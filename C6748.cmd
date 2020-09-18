@@ -12,12 +12,11 @@
 /*                 scheme according to the size of your program.            */
 /*                                                                          */
 /****************************************************************************/
--stack 0x400
+
 MEMORY
 {
     DSPL2ROM     o = 0x00700000  l = 0x00100000   /* 1MB L2 Internal ROM */
-    DSPL2RAM_BOOT     o = 0x00800000  l = 0x00001000   /* 256kB L2 Internal RAM */
-    DSPL2RAM_PRO        o = 0x00801000  l = 0x0003F000   /* 256kB L2 Internal RAM */
+    DSPL2RAM     o = 0x00800000  l = 0x00040000   /* 256kB L2 Internal RAM */
     DSPL1PRAM    o = 0x00E00000  l = 0x00008000   /* 32kB L1 Internal Program RAM */
     DSPL1DRAM    o = 0x00F00000  l = 0x00008000   /* 32kB L1 Internal Data RAM */
     SHDSPL2ROM   o = 0x11700000  l = 0x00100000   /* 1MB L2 Shared Internal ROM */
@@ -35,33 +34,29 @@ MEMORY
                                                
 SECTIONS                                       
 {                                              
-    // .text          >  SHRAM        /* text:可执行代码段,包含所有可执行的代码,以及编译器编译产生的常量*/
-    /* Program memory (PAGE 0) sections */
-    .text1     : {main.obj(.text)}> DSPL2RAM_BOOT /*主函数所在的.obj单独放在一个段，配置到H0*/
-
-    .text2     : {*(.text)}> DSPL2RAM_PRO /*剩余的.obj放在另一个段，配置到*/
-    .stack         >  DSPL2RAM_PRO     /* stack:栈段，可放在SHRAM或者DSPL2RAM里面,放在DSPL2RAM里，程序运行更快 */
-    .bss           >  DSPL2RAM_PRO        /* bss: 为全局和静态变量保留存储空间*/     //SHRAM
-    .cio           >  DSPL2RAM_PRO
-    .const         >  DSPL2RAM_PRO     /* const: 包含了字符串常量、字符串文字、选择表以及使用const关键字定义(但是不包括volatile类型，并假设使用小内存模型)的只读型变量*/
-    .data          >  SHRAM
-    .switch        >  DSPL2RAM_PRO     /* switch: 存放switch-case指令所使用的选择表*/
-    .sysmem        >  DSPL2RAM_PRO     /* sysmem: 为动态内存分配保留存储空间，从而为malloc，calloc，realloc和 new等动态内存分配程序服务 */
-    .far           >  DSPL2RAM_PRO
-    .args          >  DSPL2RAM_PRO
-    .ppinfo        >  DSPL2RAM_PRO
-    .ppdata        >  DSPL2RAM_PRO
+    .text          >  DSPL2RAM        /* text:可执行代码段,包含所有可执行的代码,以及编译器编译产生的常量*/
+    .stack         >  DSPL2RAM     /* stack:栈段，可放在SHRAM或者DSPL2RAM里面,放在DSPL2RAM里，程序运行更快 */
+    .bss           >  DSPL2RAM        /* bss: 为全局和静态变量保留存储空间*/     //SHRAM
+    .cio           >  DSPL2RAM
+    .const         >  DSPL2RAM     /* const: 包含了字符串常量、字符串文字、选择表以及使用const关键字定义(但是不包括volatile类型，并假设使用小内存模型)的只读型变量*/
+    .data          >  DSPL2RAM
+    .switch        >  DSPL2RAM     /* switch: 存放switch-case指令所使用的选择表*/
+    .sysmem        >  DSPL2RAM     /* sysmem: 为动态内存分配保留存储空间，从而为malloc，calloc，realloc和 new等动态内存分配程序服务 */
+    .far           >  DSPL2RAM
+    .args          >  DSPL2RAM
+    .ppinfo        >  DSPL2RAM
+    .ppdata        >  DSPL2RAM
   
     /* COFF sections */
-    .pinit         >  SHRAM     /*pinit,cinit: 包含了初始化变量和常量所用的表格*/
-    .cinit         >  SHRAM
+    .pinit         >  DSPL2RAM     /*pinit,cinit: 包含了初始化变量和常量所用的表格*/
+    .cinit         >  DSPL2RAM
   
     /* EABI sections */
-    .binit         >  DSPL2RAM_PRO
-    .init_array    >  DSPL2RAM_PRO
-    .neardata      >  DSPL2RAM_PRO
-    .fardata       >  DSPL2RAM_PRO
-    .rodata        >  DSPL2RAM_PRO
-    .c6xabi.exidx  >  DSPL2RAM_PRO
-    .c6xabi.extab  >  DSPL2RAM_PRO
+    .binit         >  DSPL2RAM
+    .init_array    >  DSPL2RAM
+    .neardata      >  DSPL2RAM
+    .fardata       >  DSPL2RAM
+    .rodata        >  DSPL2RAM
+    .c6xabi.exidx  >  DSPL2RAM
+    .c6xabi.extab  >  DSPL2RAM
 }

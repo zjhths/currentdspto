@@ -53,6 +53,7 @@ unsigned int Hdlc_Init(Hdlc_interface* interface, unsigned int channel){
 	asm("   NOP");
     HDLC_clr_int_addr = 0x00;
     HDLC_rx_ctrl_addr |= HDLC_Rx_int_enable;//使能HDLC中断
+
     return 0;
 }
 
@@ -93,6 +94,7 @@ unsigned int Hdlc_Recv(Hdlc_interface* interface, unsigned char* data,unsigned i
     unsigned short data_len=0;
 	hdlc_byte_temp = HDLC_rx_status_addr & 0x01ff;
 	*data_length = hdlc_byte_temp>>1;      //接收到的数据个数
+	data_len = *length;
     for(i=0;i<*data_length;i++)
     {
         data[i] = HDLC_rx_data_out_addr & 0xFF;

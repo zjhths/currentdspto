@@ -64,8 +64,8 @@ int DA_SHURU_2;
 //long long AD_total[5000];
 //double AD_2500_SEL[5000];
 //int  da_test[500];
-double AD_OUT[5000];
-double AD_iir_SEL[5000];
+//double AD_OUT[5000];
+//double AD_iir_SEL[5000];
 double test_valuei=0;
 double test_valuev=0;
 double Rx=0;
@@ -179,20 +179,20 @@ void SetOutWave()
 //        RMDATA_LH = *(unsigned short *)&p_float[2];
 //        RMDATA_LL = *(unsigned short *)&p_float[0];
 //
-        p_float=( unsigned char *)&m_double;
-        SIN_AMP_HH = *(unsigned short *)&p_float[6];
-        SIN_AMP_HL = *(unsigned short *)&p_float[4];
-        SIN_AMP_LH = *(unsigned short *)&p_float[2];
-        SIN_AMP_LL = *(unsigned short *)&p_float[0];
+//        p_float=( unsigned char *)&m_double;
+//        SIN_AMP_HH = *(unsigned short *)&p_float[6];
+//        SIN_AMP_HL = *(unsigned short *)&p_float[4];
+//        SIN_AMP_LH = *(unsigned short *)&p_float[2];
+//        SIN_AMP_LL = *(unsigned short *)&p_float[0];
 //		SIN_AMP_HH=0x3f84;  //0.01  3f847ae147ae147b
 //		SIN_AMP_HL=0x7ae1;
 //		SIN_AMP_LH=0x47ae;
 //		SIN_AMP_LL=0x147b;
 
-	// 	SIN_AMP_HH=0x3fb9;//0.1
-	// 	SIN_AMP_HL=0x9999;
-	// 	SIN_AMP_LH=0x9999;
-	// 	SIN_AMP_LL=0x999a;
+	 	SIN_AMP_HH=0x3fb9;//0.1
+	 	SIN_AMP_HL=0x9999;
+	 	SIN_AMP_LH=0x9999;
+	 	SIN_AMP_LL=0x999a;
 
 //	 	SIN_AMP_HH=0x3ff0;  //1
 //	 	SIN_AMP_HL=0x0000;
@@ -270,7 +270,7 @@ void SetOutWave()
 //		 SET_POINT_HL= 0x0000 ;
 //		 SET_POINT_LH= 0x0000 ;
 //		 SET_POINT_LL= 0x0000 ;
-//		 DA_CONFIG_SEL=0x1;//开环输出：0  闭环：1
+//		// DA_CONFIG_SEL=0x1;//开环输出：0  闭环：1
 //		 Delay1();
 //		 SET_POINT_HH= 0x4000 ; //2
 //		 SET_POINT_HL= 0x0000 ;
@@ -338,6 +338,7 @@ void Board_Init(void)
 {
 	/*设置主频时钟和EMIF时钟*/
 		Set_Core_456MHz();
+      // Set_Core_300MHz();
 		/*设置DDR时钟*/
 		//Set_DDRPLL_150MHz();
 		/*设置DDR时间*/
@@ -421,7 +422,8 @@ int main(void){
 
 	asm("   NOP");
 	INT_CLEAR=0xFF;//清中断  先开中断再清中断目的是：AD中断会一直持续使能，只有清中断后下一个中断使能上升沿到来才能进中断。
-
+    //开中断
+     INT_EN=0X0018;   //开中断使能        1:int0 2:int1 4:int2  8:int3 10:int4
 //while(1) {}
 ////
 //	}//JUST FOR TEST
@@ -446,8 +448,7 @@ int main(void){
 
 	 p_protocol_analyze->da_output_fifo =model_list[3]->up_out_data_list;
 
-	 //开中断
-	     INT_EN=0X0018;   //开中断使能        1:int0 2:int1 4:int2  8:int3 10:int4
+
 
 	while(1)   //按照前面协议指定工作模式循环扫描工作
 	{

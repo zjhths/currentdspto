@@ -75,8 +75,8 @@ extern unsigned int j;
 extern int DA_SHURU_1;
 extern int DA_SHURU_2;
 //extern int AD_pid[16000];
-extern double AD_OUT[6000];
-extern double AD_iir_SEL[6000];
+//extern double AD_OUT[5000];
+//extern double AD_iir_SEL[5000];
 //extern double AD_2500_SEL[5000];
 extern void i2c_init();
 extern void GPIOInit();
@@ -379,7 +379,7 @@ static void GPIOIsr3(void)
 	//    unsigned char UART_Test[8];
 	//    Frame_TypeDef mm;
 	//    CAN_ReceiveData(UART_Test,&mm);
-	    if (updata_cnt >=4)
+	    if (updata_cnt >=16)
 	    {
 	        AD_2500_1 = 0x0000000000000000;
 	        ad_data[3]=AD_OUT_DATA_HH ;
@@ -803,41 +803,41 @@ memset(ttt,0,8);
 //	}
 //}
 
-void NoiseTest(void)
-{
-	//≤‚ ‘◊Ó÷’1s‘Î…˘
-    //≤‚ ‘NOISE
-    unsigned short *ad_data = (unsigned short *)&AD_2500_1;
-	if (k <5000)
-	{
-		AD_2500_1 = 0x0000000000000000;
-		ad_data[3]=AD_OUT_DATA_HH ;
-		ad_data[2]=AD_OUT_DATA_HL  ;
-		ad_data[1]=AD_OUT_DATA_LH;
-		ad_data[0]=AD_OUT_DATA_LL;
-		AD_2500_2 = *(double *)&AD_2500_1;
-		AD_OUT[k] = AD_2500_2/64;
-		AD_2500_2=0;
-
-		          IIR_CH_SEL=channal_zero[1];//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
-		          AD_2500_1 = 0x0000000000000000;
-		          ad_data[3]=IIR_CH_DATA_HH ;
-		          ad_data[2]=IIR_CH_DATA_HL  ;
-		          ad_data[1]=IIR_CH_DATA_LH;
-		          ad_data[0]=IIR_CH_DATA_LL;
-		          AD_2500_2 = *(double *)&AD_2500_1;
-		          AD_iir_SEL[k] = AD_2500_2;
-		          AD_2500_2=0;
-		k+=1;
-	}
-	else
-	{
-		channal=FUSION_CH_STATUS;
-		k=0;
-
-	}
-
-}
+//void NoiseTest(void)
+//{
+//	//≤‚ ‘◊Ó÷’1s‘Î…˘
+//    //≤‚ ‘NOISE
+//    unsigned short *ad_data = (unsigned short *)&AD_2500_1;
+//	if (k <5000)
+//	{
+//		AD_2500_1 = 0x0000000000000000;
+//		ad_data[3]=AD_OUT_DATA_HH ;
+//		ad_data[2]=AD_OUT_DATA_HL  ;
+//		ad_data[1]=AD_OUT_DATA_LH;
+//		ad_data[0]=AD_OUT_DATA_LL;
+//		AD_2500_2 = *(double *)&AD_2500_1;
+//		AD_OUT[k] = AD_2500_2/64;
+//		AD_2500_2=0;
+//
+//		          IIR_CH_SEL=channal_zero[1];//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
+//		          AD_2500_1 = 0x0000000000000000;
+//		          ad_data[3]=IIR_CH_DATA_HH ;
+//		          ad_data[2]=IIR_CH_DATA_HL  ;
+//		          ad_data[1]=IIR_CH_DATA_LH;
+//		          ad_data[0]=IIR_CH_DATA_LL;
+//		          AD_2500_2 = *(double *)&AD_2500_1;
+//		          AD_iir_SEL[k] = AD_2500_2;
+//		          AD_2500_2=0;
+//		k+=1;
+//	}
+//	else
+//	{
+//		channal=FUSION_CH_STATUS;
+//		k=0;
+//
+//	}
+//
+//}
 
 //
 //void PhaseTest(void)

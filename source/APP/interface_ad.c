@@ -41,7 +41,7 @@ void Ad_Send(Ad_interface* interface, unsigned char* data,unsigned int length){
 void Ad_Recv(Ad_interface* interface, unsigned char* data,unsigned int* length){
     unsigned int* data_length=length;
     unsigned int i=0;
-    unsigned short data_len=0;
+    unsigned short data_len=4;
     unsigned char data_temp[8];
     unsigned short data_len_temp=0;
     for(i=0;i<*data_length;i++)

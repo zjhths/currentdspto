@@ -41,6 +41,8 @@
 
 #define HDLC_CMD_SIZE                       500
 
+    #define INT_CLEAR               (*(unsigned short int *)0x62000058)
+    #define INT_EN                  (*(unsigned short int *)0x6200005C)
 
 typedef struct Hdlc_interface
 {
