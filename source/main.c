@@ -42,13 +42,10 @@ unsigned char dataToSlave[2];
 double datai_to_da_pid=0,datav_to_da_pid=0;
 double datav_to_da = 0;
 //unsigned int AD_2500_1;
-double AD_2500_1;
-double AD_2500_2;
-double AD_2500_3;
+
 long long AD_2500_4;
-unsigned int j=0;
-int DA_SHURU_1;
-int DA_SHURU_2;
+
+
 
 //long long ADS_test[10000];
 //int AD_test1[5000];
@@ -75,7 +72,7 @@ long long set_num1;
 long long set_num2;
 long long set_num3;
 long long set_num4;
-int channal;
+
 
 double q;
 double r;
@@ -94,7 +91,7 @@ int DA_DATA=0;
 float wwwi;
 float datai_to_da = 0;
 #define PI 3.1415926
-extern float wave_freq;
+
 unsigned int wave_cnt=0;
 
 int bias;
@@ -106,16 +103,12 @@ int AD_MEASUER3;
 int AD_MEASUER4;
 int AD_MEASUER5;
 int ad_pid;
-int AD_CHANNAL;
+
 
 
 float ad_mea;
 
-extern unsigned char ch_sel;
-extern unsigned char HDLC_Frame_OK;
-//extern unsigned char trans_data[407];
-extern unsigned char cur_measure;  //电压测量
-extern unsigned char vol_measure;  //电流测量
+
 unsigned int DAI_CONV = 0;
 
 
@@ -384,20 +377,14 @@ protocol_analyze_interface* p_protocol_analyze;
 int main(void){
 	Board_Init();  //初始化
 	/*在这里添加主程序*/
-	INT_EN=0X0000;   //初始化配置时先关闭中断使能        1:int0 2:int1 4:int2  8:int3 10:int4
+	 EMIF(INT_EN)=0X0000;   //初始化配置时先关闭中断使能        1:int0 2:int1 4:int2  8:int3 10:int4
 //初始化配置器件寄存器
 //2500初始化配置寄存器
 	AD2500_init();
 //1281初始化配置寄存器
 	AD1281_init();
 //DA校准以及AD校准
-//  DACalibration();
-//  CurrentCalibrationCh1();
-//  CurrentCalibrationCh2();
-//	CurrentCalibrationCh3();
-//	CurrentCalibrationCh4();
-//  CurrentCalibrationCh5();
-
+	//Flash_data_init();
 //配置FPGA寄存器
 //ad检测配置校准器
 	ADPara_init();
@@ -406,12 +393,11 @@ int main(void){
 //相位补偿校正
 	channaldelay_init();
 //数据融合配置权重
-	channal=FUSION_CH_STATUS;
 	FUSION_init();
 //PID配置
 	PID_init();
 //测试用，控制内部模块跳过
-	CONTROL_BYPASS= 0x02;//1跳过kalman   2：跳过pid  4:跳过iir 8:跳过final iir 10：跳过1281平均 0xD:只有PID
+	 EMIF(CONTROL_BYPASS)= 0x02;//1跳过kalman   2：跳过pid  4:跳过iir 8:跳过final iir 10：跳过1281平均 0xD:只有PID
 //以上初始化配置完毕
 
 
@@ -421,9 +407,9 @@ int main(void){
 
 
 	asm("   NOP");
-	INT_CLEAR=0xFF;//清中断  先开中断再清中断目的是：AD中断会一直持续使能，只有清中断后下一个中断使能上升沿到来才能进中断。
+	 EMIF(INT_CLEAR)=0xFF;//清中断  先开中断再清中断目的是：AD中断会一直持续使能，只有清中断后下一个中断使能上升沿到来才能进中断。
     //开中断
-     INT_EN=0X0018;   //开中断使能        1:int0 2:int1 4:int2  8:int3 10:int4
+	 EMIF(INT_EN)=0X0018;   //开中断使能        1:int0 2:int1 4:int2  8:int3 10:int4
 //while(1) {}
 ////
 //	}//JUST FOR TEST

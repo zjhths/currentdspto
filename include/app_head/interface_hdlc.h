@@ -10,10 +10,7 @@
 
 #define hdlc_0  0
 
-#define WAVE_TRI    0x01
-#define WAVE_RECTANG    0x02
-#define WAVE_SIN    0x03
-#define WAVE_FIXED  0x04
+
 
 #define current_out 0x0
 #define voltage_out 0x1

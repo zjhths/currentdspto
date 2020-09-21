@@ -65,15 +65,11 @@ extern int AD_MEASUER2;
 extern int AD_MEASUER3;
 extern int AD_MEASUER4;
 extern int AD_MEASUER5;
-extern int AD_CHANNAL;
-extern double AD_2500_1;
-extern double AD_2500_2;
-extern double AD_2500_3;
+
+
 extern long long AD_2500_4;
-extern int AD_CHANNAL;
-extern unsigned int j;
-extern int DA_SHURU_1;
-extern int DA_SHURU_2;
+
+
 //extern int AD_pid[16000];
 //extern double AD_OUT[5000];
 //extern double AD_iir_SEL[5000];
@@ -82,48 +78,15 @@ extern void i2c_init();
 extern void GPIOInit();
 extern void IntInit();
 extern void Delay1();
-extern int channal;
-long long AD_DATA;
-long long AD_2500;
-unsigned int gpiointFlag = 0;
 
 
-unsigned char HDLC_Frame_OK=0;
-unsigned int hdlc_count1,hdlc_count2,hdlc_count3,hdlc_count4,hdlc_count5;
-unsigned char hdlc_temp1,hdlc_temp2,hdlc_temp3;
-static unsigned char HDLC_ReadTemp[30];
-
-unsigned char type_flag;
-unsigned char protocol_error;
-unsigned int output_en=0;     //输出使能
-//unsigned char trans_data[512];		//用于内部传输数据
-unsigned char cur_output_en = 0;
-unsigned char vol_output_en = 0;
-unsigned char ch_sel = 0;
-
-int wave_type = WAVE_FIXED;				//波形类别，默认输出固定值
-float wave_freq;					//波形频率
-double wave_range = 0;					//波形幅值
-double wave_range_c;
-double last_range;
-double last_range_i;
-unsigned char rev_flag=0;
-unsigned char start_output = 0;
-int NoLoad = 0;
-unsigned char cur_measure;  //电压测量
-unsigned char vol_measure;  //电流测量
-unsigned char data_prepare;
 
 
-wave_msg vol_wave;
-wave_msg cur_wave;
 
-union my_uni up_data;
+
 int updata_cnt=0;
-int k=0;
-int K=0;
+
 int cnt=0;
-static int ttt[123];
 unsigned short channal_zero[2]={1,32};//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
 /****************************************************************************/
 /*              LOCAL FUNCTION PROTOTYPES                                   */
@@ -371,23 +334,21 @@ static void GPIOIsr2(void)
 static void GPIOIsr3(void)
 {
 		int length=1;
-        unsigned short *ad_data = (unsigned short *)&AD_2500_1;
+		double ad_temp=0;
+        unsigned short *ad_data = (unsigned short *)&ad_temp;
 
 		/*关闭GPIO bank8引脚中断*/
 	    GPIOBankIntDisable(SOC_GPIO_0_REGS, 6);
-	    // Add your interrupt service code here.
-	//    unsigned char UART_Test[8];
-	//    Frame_TypeDef mm;
-	//    CAN_ReceiveData(UART_Test,&mm);
+
 	    if (updata_cnt >=16)
 	    {
-	        AD_2500_1 = 0x0000000000000000;
-	        ad_data[3]=AD_OUT_DATA_HH ;
-	        ad_data[2]=AD_OUT_DATA_HL  ;
-  			ad_data[1]=AD_OUT_DATA_LH;
-  			ad_data[0]=AD_OUT_DATA_LL;
+	        ad_temp = 0x0000000000000000;
+	        ad_data[3]= EMIF(AD_OUT_DATA(0)) ;
+	        ad_data[2]= EMIF(AD_OUT_DATA(1)) ;
+  			ad_data[1]= EMIF(AD_OUT_DATA(2)) ;
+  			ad_data[0]= EMIF(AD_OUT_DATA(3)) ;
 
-			ad_sorce_double = *(double*)&AD_2500_1;
+			ad_sorce_double = *(double*)&ad_temp;
 			ad_sorce_float= ad_sorce_double/-50*1000;
 
 			if(m_ad_interface != 0)
@@ -770,9 +731,7 @@ static void GPIOPinMuxSetup()
 
 //
 //}
-void Test(void){
-memset(ttt,0,8);
-}
+
 //void iirTest(void)
 //{
 //	//测试iir

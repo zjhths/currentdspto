@@ -6,12 +6,13 @@
  */
 #include "comm_factory.h"
 #include "fifo.h"
+#include "control_variable.h"
 #ifndef PROTOCOL_ANALYZE_H_
 #define PROTOCOL_ANALYZE_H_
 
 #define HOST_ADDR 0x52
 #define REMOTE_ADDR 0x53
-#define CHANNEL_ADDR 0x44//0x41~0x44四个通道;
+#define CHANNEL_ADDR 0x41//0x41~0x44四个通道;
 #define CHANNEL_ALL_ADDR 0x45//0x45全通道；
 
 #define REMOTE_CMD_BEGIN                         0x21
@@ -24,6 +25,13 @@
 #define ANALYZE_DATA_SIZE 512
 #define AD_DATA_SIZE 400
 
+#define NOR_FLASH_DATA_BASE              (0x60000000+128*0x8000)
+
+#define WAVE_FIXED           0x01 //固定
+#define WAVE_RECTANG    0x02//方
+#define WAVE_TRI               0x04//三角
+#define WAVE_SIN              0x08//正弦
+
 
 typedef enum Analyze_Type
 {
@@ -32,6 +40,7 @@ typedef enum Analyze_Type
     recv_ad_cmd_func,
     recv_ad_data_func,
     set_mode_func,
+    updata_variable_mode_func,
 
     remote_begin,
     remote_output,
@@ -78,6 +87,18 @@ typedef struct protocol_ad_modle_set_struct
     unsigned char frequncy[4];
     unsigned char amplitude[4];
 }protocol_ad_modle_set_struct;
+/*===============================*/
+typedef struct protocol_updata_variable_struct
+{
+    protocol_handle_struct m_handle;
+    Da_Variable  up_da_variable;
+    Ad_Phase      up_ad_phase;
+    Ad_Variable  up_ad_variable;
+    Fusion_Parameters up_fusion_parameters;
+    Kalman_Parameters up_pusion_parameters;
+    Calib_Struct  up_calib_struct;
+    PID_Struct up_pid_struct;
+}protocol_updata_variable_struct;
 //++++++++++++++++外部HDLC命令集++++++++++++++++++++//
 typedef struct protocol_remote_struct
 {
@@ -113,6 +134,7 @@ int protocol_rest(protocol_analyze_interface* interface,unsigned char* sources);
 int protocol_recv_ad_cmd(protocol_analyze_interface* interface,unsigned char* sources);
 int protocol_recv_ad_data(protocol_analyze_interface* interface,unsigned char* sources);
 int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sources);
+int protocol_updata_variable_mode(protocol_analyze_interface* interface,unsigned char* sources);
 
 int protocol_remote_begin(protocol_analyze_interface* interface,unsigned char* sources);
 int protocol_remote_output(protocol_analyze_interface* interface,unsigned char* sources);

@@ -54,7 +54,7 @@ void TimerIntInit(void)
 
     /*使能DSP可屏蔽中断INT6*/
     IntEnable(C674X_MASK_INT6);
-    LED_CONFIG=2;
+    EMIF(LED_CONFIG)=2;
 }
 
 unsigned char GPS_R_Flag=0;

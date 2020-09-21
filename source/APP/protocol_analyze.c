@@ -9,9 +9,11 @@
 #include"fpga.h"
 #include "interface_da.h"
 #include "interface_hdlc.h"
+#define NOR_FLASH_BASE              (0x60000000+5*0x8000)
+
 int returns_data_status=0;
 Analyze_Type func_type =idle_func;
-PF m_protocol_analyze_list[] = {protocol_idle,protocol_rest,protocol_recv_ad_cmd,protocol_recv_ad_data,protocol_set_mode,
+PF m_protocol_analyze_list[] = {protocol_idle,protocol_rest,protocol_recv_ad_cmd,protocol_recv_ad_data,protocol_set_mode,protocol_updata_variable_mode,
                                                      protocol_remote_begin, protocol_remote_output,protocol_remote_returns_data,protocol_remote_stop,};
 unsigned char protocol_data_source[ANALYZE_DATA_SIZE];
 unsigned int signal_list[10]={0};
@@ -31,6 +33,9 @@ case 0x31:
     break;
 case 0x32:
    return set_mode_func;
+    break;
+case 0x33:
+    return updata_variable_mode_func;
     break;
 //远程计算机
 case REMOTE_CMD_BEGIN:
@@ -133,7 +138,7 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
     unsigned int int_frequncy=0;
     unsigned char *p_float =( unsigned char *)&m_frequncy;
     float m_amplitude_tag;
-    CHANNEL_SEL = 0x400;
+    EMIF(CHANNEL_SEL)= 0x400;
     func_type = idle_func;
     m_ad_modle_set = (protocol_ad_modle_set_struct *)sources;
     memcpy(p_float,m_ad_modle_set->frequncy,4);
@@ -150,7 +155,7 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
     }else
         ;
 
-    CONTROL_BYPASS= ~0x2;
+    EMIF(CONTROL_BYPASS)= ~0x2;
     switch(m_ad_modle_set->wave)
     {
     case 0x01://三角波
@@ -172,7 +177,7 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
           DA_CONFIG_SEL=0X0;
           WAVE_SEL=4;//zhengxian
           DA_CONFIG_SEL=0X1;
-          CONTROL_BYPASS=0x4;
+          EMIF(CONTROL_BYPASS)=0x2;
         break;
     case 0x02://方波
         int_frequncy =128000/m_frequncy/0.5;
@@ -194,7 +199,7 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
         DA_CONFIG_SEL=0X0;
         WAVE_SEL=2;//zhengxian
         DA_CONFIG_SEL=0X1;
-        CONTROL_BYPASS=0x0;
+        EMIF(CONTROL_BYPASS)=0x2;
         break;
     case 0x03://正弦波
 
@@ -213,7 +218,7 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
         DA_CONFIG_SEL=0X0;
         WAVE_SEL=0x8;//zhengxian
         DA_CONFIG_SEL=0X1;
-        CONTROL_BYPASS=0x0;
+        EMIF(CONTROL_BYPASS)=0x2;
         break;
     case 0x04://直流
         WAVE_SEL = 1; //fix_wave
@@ -224,10 +229,10 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
         SET_POINT_LH =*(unsigned short *)&p_float[2];
         SET_POINT_LL = *(unsigned short *)&p_float[0];
         DA_CONFIG_SEL=0X1;
-        CONTROL_BYPASS=0x4;
-        temp  =  FIFO_RST;
+        EMIF(CONTROL_BYPASS)=0x2;
+        temp  =  EMIF(FIFO_RST);
                 temp |= 1;
-                FIFO_RST = temp;
+                EMIF(FIFO_RST)= temp;
     default:
         break;
 
@@ -238,13 +243,28 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
     //m_ad_modle_set->frequncy
     return 0;
 }
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
-int protocol_remote_begin(protocol_analyze_interface* interface,unsigned char* sources){
-    //protocol_handle_struct * m_remote_begin;
+
+int protocol_updata_variable_mode(protocol_analyze_interface* interface,unsigned char* sources){
     func_type = idle_func;
-    //m_remote_begin = (protocol_handle_struct *)sources;
+    protocol_updata_variable_struct* m_updata_variable = (protocol_updata_variable_struct*)sources;
+    unsigned short data_len = sizeof(protocol_updata_variable_struct);
+    NOR_block_erase(NOR_FLASH_DATA_BASE);
+    NOR_write(NOR_FLASH_DATA_BASE,(unsigned char*)&(m_updata_variable->up_da_variable),(data_len-3)/2);
+    if (fifo_writeable(interface->hdlc_output_fifo))
+      {
+            NOR_read(NOR_FLASH_DATA_BASE,(unsigned char*)&(m_updata_variable->up_da_variable),(data_len-3)/2);
+            fifo_write(interface->hdlc_output_fifo, (void *)m_updata_variable,&data_len);
+       }
     return 0;
 }
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+int protocol_remote_begin(protocol_analyze_interface* interface,unsigned char* sources){
+    func_type = idle_func;
+
+    return 0;
+}
+
 int protocol_remote_output(protocol_analyze_interface* interface,unsigned char* sources){
     protocol_remote_struct * m_remote_output;
     unsigned int i=0;
@@ -255,7 +275,7 @@ int protocol_remote_output(protocol_analyze_interface* interface,unsigned char* 
     float m_amplitude_tag;
     func_type = idle_func;
     m_remote_output = (protocol_remote_struct *)sources;
-    CHANNEL_SEL = 0x400;
+    EMIF(CHANNEL_SEL)= 0x400;
     memcpy(p_float,&(m_remote_output->channel_data[CHANNEL_ADDR-0x41][0]),4);
     if(m_remote_output->m_handle.cmd == REMOTE_CMD_CURRENT_OUTPUT)//電流輸出
     {
@@ -281,6 +301,7 @@ int protocol_remote_output(protocol_analyze_interface* interface,unsigned char* 
 }
 
 int protocol_remote_returns_data(protocol_analyze_interface* interface,unsigned char* sources){
+    double m_double=0;
     protocol_remote_struct  m_remote_returns_data;
     protocol_handle_struct * m_remote_returns_data_head = (protocol_handle_struct *)sources;
     unsigned short temp_data=0,i=0;
@@ -314,7 +335,7 @@ switch(returns_data_status)
     return 0;
 }
 int protocol_remote_stop(protocol_analyze_interface* interface,unsigned char* sources){
-    //protocol_handle_struct * m_remote_stop;
+
     func_type = idle_func;
     //m_remote_stop = (protocol_handle_struct *)sources;
     return 0;

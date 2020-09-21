@@ -56,9 +56,9 @@ void i2c_init()
 	long long i;
 	unsigned int m ;
     //reset DA
-	DA_RST_EN=0x1;
+	EMIF(DA_RST_EN)=0x1;
     for(i=0;i<500;i++);
-    DA_RST_EN=0x0;
+    EMIF(DA_RST_EN)=0x0;
     for(i=0;i<500;i++);
 
     I2CPinMuxSetup(0);

@@ -223,8 +223,8 @@ void NorFlashTest(void)
 
 	for(i = 0; i < Length; i++)
 	{
-		NOR_write(Flash_StartAdd, &write_data, 1);
-		NOR_read(Flash_StartAdd, &read_data, 1);
+		NOR_write(Flash_StartAdd, (unsigned char *)&write_data, 1);
+		NOR_read(Flash_StartAdd, (unsigned char *)&read_data, 1);
 
 		if(read_data != 0)
 		{
@@ -247,8 +247,8 @@ void NorFlashTest(void)
     NOR_block_erase(Flash_StartAdd+2*0x8000);
 	for(i = 0; i < Length; i++)
 	{
-		NOR_write(Flash_StartAdd, &write_data, 1);
-		NOR_read(Flash_StartAdd, &read_data, 1);
+		NOR_write(Flash_StartAdd, (unsigned char *)&write_data, 1);
+		NOR_read(Flash_StartAdd, (unsigned char *)&read_data, 1);
 
 		if(read_data != 0xFFFF)
 		{
@@ -271,8 +271,8 @@ void NorFlashTest(void)
     NOR_block_erase(Flash_StartAdd+2*0x8000);
 	for(i = 0; i < Length; i++)
 	{
-		NOR_write(Flash_StartAdd, &write_data, 1);
-		NOR_read(Flash_StartAdd, &read_data, 1);
+		NOR_write(Flash_StartAdd, (unsigned char *)&write_data, 1);
+		NOR_read(Flash_StartAdd, (unsigned char *)&read_data, 1);
 
 		if(read_data != 0xAAAA)
 		{
@@ -295,8 +295,8 @@ void NorFlashTest(void)
     NOR_block_erase(Flash_StartAdd+2*0x8000);
 	for(i = 0; i < Length; i++)
 	{
-		NOR_write(Flash_StartAdd, &write_data, 1);
-		NOR_read(Flash_StartAdd, &read_data, 1);
+		NOR_write(Flash_StartAdd, (unsigned char *)&write_data, 1);
+		NOR_read(Flash_StartAdd, (unsigned char *)&read_data, 1);
 
 		if(read_data != 0x5555)
 		{
@@ -323,8 +323,8 @@ void NorFlashTest(void)
 			j=0;
 
 		write_data=j*2;
-		NOR_write(Flash_StartAdd, &write_data, 1);
-		NOR_read(Flash_StartAdd, &read_data, 1);
+		NOR_write(Flash_StartAdd, (unsigned char *)&write_data, 1);
+		NOR_read(Flash_StartAdd, (unsigned char *)&read_data, 1);
 
 		if(read_data != j*2)
 		{
@@ -352,8 +352,8 @@ void NorFlashTest(void)
 			j=32767;
 
 		write_data = j*2;
-		NOR_write(Flash_StartAdd, &write_data, 1);
-		NOR_read(Flash_StartAdd, &read_data, 1);
+		NOR_write(Flash_StartAdd, (unsigned char *)&write_data, 1);
+		NOR_read(Flash_StartAdd, (unsigned char *)&read_data, 1);
 
 		if(read_data != j*2)
 		{

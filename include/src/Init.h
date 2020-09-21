@@ -7,6 +7,8 @@
 
 void fpga_init();	//FPGA≥ı ºªØ
 
+void flash_data_init();
+
 void channaldelay_init();
 
 void AD1281_init();
