@@ -6,17 +6,22 @@
  */
 
 #include <protocol_analyze.h>
+#include "protocol_analyze_remote.h"
+#include "protocol_analyze_pc.h"
 #include"fpga.h"
 #include "interface_da.h"
 #include "interface_hdlc.h"
-#define NOR_FLASH_BASE              (0x60000000+5*0x8000)
+
 
 int returns_data_status=0;
 Analyze_Type func_type =idle_func;
-PF m_protocol_analyze_list[] = {protocol_idle,protocol_rest,protocol_recv_ad_cmd,protocol_recv_ad_data,protocol_set_mode,protocol_updata_variable_mode,
+PF m_protocol_analyze_list[] = {protocol_idle, protocol_rest, protocol_recv_ad_cmd, protocol_recv_ad_data, protocol_set_mode,
+                                                     protocol_updata_variable_mode, protocol_updata_da_variable, protocol_updata_ad_phase, protocol_updata_ad_variable,
+                                                     protocol_updata_fusion_parameters, protocol_updata_kalman_parameters, protocol_updata_calib_struct, protocol_updata_pid_struct,
                                                      protocol_remote_begin, protocol_remote_output,protocol_remote_returns_data,protocol_remote_stop,};
 unsigned char protocol_data_source[ANALYZE_DATA_SIZE];
 unsigned int signal_list[10]={0};
+
 protocol_analyze_interface* new_protocol_analyze_interface()
 {
     protocol_analyze_interface* real_core    = (protocol_analyze_interface*)malloc(sizeof(protocol_analyze_interface));
@@ -28,35 +33,47 @@ unsigned char protocol_func_map(unsigned char* cmd)
 {
 switch(*cmd)
 {
-case 0x31:
+case CMD_REST:
+    return  rest_func;
+case CMD_SET_CURRENT:
+case CMD_SET_VOLTAGE:
    return set_mode_func;
-    break;
-case 0x32:
-   return set_mode_func;
-    break;
-case 0x33:
+
+case PC_CMD_SET_VARIABLE:
     return updata_variable_mode_func;
-    break;
+case PC_CMD_DA_VARIABLE:
+    return updata_da_variable_func;
+case PC_CMD_AD_PHASE:
+    return updata_ad_phase_func;
+case PC_CMD_AD_VARIABLE:
+    return updata_ad_variable_func;
+case PC_CMD_FUSION_PARAMETERS:
+    return updata_fusion_parameters_func;
+case PC_CMD_KALMAN_PARAMETERS:
+    return updata_kalman_parameters_func;
+case PC_CMD_CAILIB_STRUCT:
+    return updata_calib_struct_func;
+case PC_CMD_PID_STRUCT:
+    return updata_pid_struct_func;
+
 //远程计算机
 case REMOTE_CMD_BEGIN:
    return remote_begin;
-    break;
+
 case REMOTE_CMD_CURRENT_OUTPUT:
 case REMOTE_CMD_VOLTAGE_OUTPUT:
    return remote_output;
-    break;
+
 
 case REMOTE_CMD_CURRENT_RETURNS:
 case REMOTE_CMD_VOLTAGE_RETURNS:
    return remote_returns_data;
-    break;
+
 case REMOTE_CMD_STOP:
     return  remote_stop;
-     break;
 
 default:
     return * cmd;
-    break;
 
 }
 }
@@ -85,6 +102,7 @@ return 0;
 }
 
 int protocol_rest(protocol_analyze_interface* interface,unsigned char* sources){
+    fifo_clear(interface->ad_input_fifo);
 return 0;
 }
 
@@ -115,7 +133,7 @@ int protocol_recv_ad_data(protocol_analyze_interface* interface,unsigned char* s
             temp_data  =  (*(unsigned short int *)0x62000310);
             send_pc_data.temp[1] = temp_data;
             send_pc_data.temp[0] = temp_data >> 8;
-            for(i = 0;i<100;i++){
+            for(i = 0;i<102;i++){
                 fifo_read(interface->ad_input_fifo, &(send_pc_data.data_sorce[i*4]),&data_len);
             }
             //fifo_read_batch(interface->ad_input_fifo, send_pc_data.data_sorce, 100);
@@ -244,100 +262,7 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
     return 0;
 }
 
-int protocol_updata_variable_mode(protocol_analyze_interface* interface,unsigned char* sources){
-    func_type = idle_func;
-    protocol_updata_variable_struct* m_updata_variable = (protocol_updata_variable_struct*)sources;
-    unsigned short data_len = sizeof(protocol_updata_variable_struct);
-    NOR_block_erase(NOR_FLASH_DATA_BASE);
-    NOR_write(NOR_FLASH_DATA_BASE,(unsigned char*)&(m_updata_variable->up_da_variable),(data_len-3)/2);
-    if (fifo_writeable(interface->hdlc_output_fifo))
-      {
-            NOR_read(NOR_FLASH_DATA_BASE,(unsigned char*)&(m_updata_variable->up_da_variable),(data_len-3)/2);
-            fifo_write(interface->hdlc_output_fifo, (void *)m_updata_variable,&data_len);
-       }
-    return 0;
-}
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
-int protocol_remote_begin(protocol_analyze_interface* interface,unsigned char* sources){
-    func_type = idle_func;
 
-    return 0;
-}
 
-int protocol_remote_output(protocol_analyze_interface* interface,unsigned char* sources){
-    protocol_remote_struct * m_remote_output;
-    unsigned int i=0;
-    float m_amplitude=0;
-    double m_double=0;
-    unsigned int int_frequncy=0;
-    unsigned char *p_float =( unsigned char *)&m_amplitude;
-    float m_amplitude_tag;
-    func_type = idle_func;
-    m_remote_output = (protocol_remote_struct *)sources;
-    EMIF(CHANNEL_SEL)= 0x400;
-    memcpy(p_float,&(m_remote_output->channel_data[CHANNEL_ADDR-0x41][0]),4);
-    if(m_remote_output->m_handle.cmd == REMOTE_CMD_CURRENT_OUTPUT)//電流輸出
-    {
-        DA_VI_SEL = 0;
-        m_amplitude_tag = -50;
-    }else if(m_remote_output->m_handle.cmd == REMOTE_CMD_VOLTAGE_OUTPUT)//電壓力輸出
-    {
-        DA_VI_SEL = 1;
-        m_amplitude_tag = 1;
-    }else
-        return 0;
-
-            WAVE_SEL = 1; //fix_wave
-            m_double = m_amplitude*m_amplitude_tag/1000;//电压模式下：value = 目标电压（V）；电流模式下value = -50 * 目标电流（A）
-            p_float=( unsigned char *)&m_double;
-            SET_POINT_HH =*(unsigned short *)&p_float[6];
-            SET_POINT_HL =*(unsigned short *)&p_float[4];
-            SET_POINT_LH =*(unsigned short *)&p_float[2];
-            SET_POINT_LL = *(unsigned short *)&p_float[0];
-            DA_CONFIG_SEL=0X1;
-            func_type = remote_returns_data;
-    return 0;
-}
-
-int protocol_remote_returns_data(protocol_analyze_interface* interface,unsigned char* sources){
-    double m_double=0;
-    protocol_remote_struct  m_remote_returns_data;
-    protocol_handle_struct * m_remote_returns_data_head = (protocol_handle_struct *)sources;
-    unsigned short temp_data=0,i=0;
-    unsigned short data_len=0;
-switch(returns_data_status)
-{
-   case 0:
-       fifo_clear(interface->ad_input_fifo);
-       returns_data_status = 1;
-   break;
-    case 1:
-    if (fifo_writeable(interface->hdlc_output_fifo))
-    {
-        temp_data =  fifo_readable(interface->ad_input_fifo);
-        if (temp_data == 1)
-        {
-            func_type = idle_func;
-            m_remote_returns_data.m_handle.data_locality_addr = REMOTE_ADDR;
-            m_remote_returns_data.m_handle.data_source_addr = CHANNEL_ADDR;
-            m_remote_returns_data.m_handle.cmd = m_remote_returns_data_head->cmd;
-            fifo_read(interface->ad_input_fifo, &(m_remote_returns_data.channel_data[CHANNEL_ADDR-0x41][0]),&data_len);
-
-            data_len = sizeof(protocol_remote_struct);
-            fifo_write(interface->hdlc_output_fifo, (void *)&m_remote_returns_data,&data_len);
-        }
-    }
-    break;
-    default:
-        break;
-}
-    return 0;
-}
-int protocol_remote_stop(protocol_analyze_interface* interface,unsigned char* sources){
-
-    func_type = idle_func;
-    //m_remote_stop = (protocol_handle_struct *)sources;
-    return 0;
-}
 

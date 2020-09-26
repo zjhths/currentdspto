@@ -12,7 +12,8 @@
 /*                 scheme according to the size of your program.            */
 /*                                                                          */
 /****************************************************************************/
-
+//-stack           0x00008000
+-heap            0x00021000
 MEMORY
 {
     DSPL2ROM     o = 0x00700000  l = 0x00100000   /* 1MB L2 Internal ROM */

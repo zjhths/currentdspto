@@ -19,4 +19,7 @@ void FUSION_init();
 
 void PID_init();
 
+void ADPara_init();
+
+void DAPara_init();
 #endif /* BH_FUNINIT_H_ */

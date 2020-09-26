@@ -92,7 +92,7 @@ unsigned int Hdlc_Recv(Hdlc_interface* interface, unsigned char* data,unsigned i
     unsigned int hdlc_byte_temp;
     unsigned int i=0;
     unsigned short data_len=0;
-	hdlc_byte_temp = HDLC_rx_status_addr & 0x01ff;
+	hdlc_byte_temp = HDLC_rx_status_addr & 0x03ff;
 	*data_length = hdlc_byte_temp>>1;      //接收到的数据个数
 	data_len = *length;
     for(i=0;i<*data_length;i++)

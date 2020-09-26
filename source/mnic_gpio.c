@@ -6,70 +6,30 @@
  */
 
 #include "gpio.h"
-#include "pll.h"
 #include "psc.h"
-#include "ddr.h"
-#include "timer.h"
 #include "hw_syscfg0_C6748.h"
 #include "interrupt.h"
 #include "soc_C6748.h"
-#include "mnic_C6748.h"
-#include "mnic_timer.h"
-#include "mnic_gpio.h"
-#include "mnic_emif.h"
-#include "mnic_test.h"
+
+
 #include "hw_types.h"
 #include "fpga.h"
-#include "Init.h"
-#include "rs232_rs422.h"
-#include "mnic_nor.h"
-#include "spi.h"
-#include "mini_spi.h"
-#include "AD.h"
-#include "Data_Exchange.h"
-#include "Nav.h"
-#include "stdio.h"
-#include "MBox.h"
-#include "HDLC.h"
-#include "pid_func.h"
-#include "mnic_i2c.h"
-#include "mnic_interrupt.h"
 
-#include "func.h"
+
 #include "interface_ad.h"
 #include "interface_hdlc.h"
+
 extern Ad_interface* m_ad_interface;
-double  ad_sorce_double;
-float ad_sorce_float;
-unsigned int test_count=0;
-
 extern Hdlc_interface* my_hdlc;
+extern unsigned int ad_recv_mem;
 
-extern int AD_MEASUER;
 //extern long long ADS_test[10000];
-extern unsigned int V_data;
-//double datai_to_da;
-struct _pid *pp;
-extern double datai_to_da_pid,datav_to_da_pid;
-extern double v_mea_data_mix;
-extern double v_mea_data_2500;
-extern unsigned int DAV_CONV;
 //extern int AD_test1[5000];
 //extern int AD_test2[5000];
 //extern int AD_test3[5000];
 //extern int AD_test4[5000];
 //extern int AD_test5[5000];
 //extern int AD_test6[5000];
-extern int AD_MEASUER;
-extern int AD_MEASUER2;
-extern int AD_MEASUER3;
-extern int AD_MEASUER4;
-extern int AD_MEASUER5;
-
-
-extern long long AD_2500_4;
-
-
 //extern int AD_pid[16000];
 //extern double AD_OUT[5000];
 //extern double AD_iir_SEL[5000];
@@ -78,16 +38,10 @@ extern void i2c_init();
 extern void GPIOInit();
 extern void IntInit();
 extern void Delay1();
-
-
-
-
-
-
 int updata_cnt=0;
-
 int cnt=0;
-unsigned short channal_zero[2]={1,32};//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
+unsigned char channal_zero=0x00;//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
+
 /****************************************************************************/
 /*              LOCAL FUNCTION PROTOTYPES                                   */
 /****************************************************************************/
@@ -331,30 +285,79 @@ static void GPIOIsr2(void)
  * 函数名：	 static void GPIOIsr3(void)
  * 函数功能： 中断服务程序执行GPIO中断。GPIO0[13]
  */
+
 static void GPIOIsr3(void)
 {
-		int length=1;
-		double ad_temp=0;
-        unsigned short *ad_data = (unsigned short *)&ad_temp;
+		unsigned int length=1,ad_sorce_int=0,j=0,k=0;
+		double ad_temp;
+        unsigned short *ad_data = (unsigned short *)&(ad_temp);
+        float ad_sorce_float[6];
 
 		/*关闭GPIO bank8引脚中断*/
 	    GPIOBankIntDisable(SOC_GPIO_0_REGS, 6);
 
-	    if (updata_cnt >=16)
+	    if (updata_cnt >=0)
 	    {
-	        ad_temp = 0x0000000000000000;
-	        ad_data[3]= EMIF(AD_OUT_DATA(0)) ;
-	        ad_data[2]= EMIF(AD_OUT_DATA(1)) ;
-  			ad_data[1]= EMIF(AD_OUT_DATA(2)) ;
-  			ad_data[0]= EMIF(AD_OUT_DATA(3)) ;
+	        switch(channal_zero){
+            case 0x00:
+                ad_temp = 0x0000000000000000;
+                ad_data[3]= EMIF(CALIB_OUT(0)) ;
+                ad_data[2]= EMIF(CALIB_OUT(1)) ;
+                ad_data[1]= EMIF(CALIB_OUT(2)) ;
+                ad_data[0]= EMIF(CALIB_OUT(3)) ;
 
-			ad_sorce_double = *(double*)&ad_temp;
-			ad_sorce_float= ad_sorce_double/-50*1000;
+                ad_sorce_float[0]= ad_temp/-50*1000;
+                k=1;
+                break;
+	        case 0x01:
+	            ad_temp = 0x0000000000000000;
+	            ad_data[3]= EMIF(AD_OUT_DATA(0)) ;
+	            ad_data[2]= EMIF(AD_OUT_DATA(1)) ;
+	            ad_data[1]= EMIF(AD_OUT_DATA(2)) ;
+	            ad_data[0]= EMIF(AD_OUT_DATA(3)) ;
 
-			if(m_ad_interface != 0)
-			    m_ad_interface->recv(m_ad_interface,(unsigned char*)&ad_sorce_float,&length);
+	            ad_sorce_float[0]= ad_temp/-50*1000;
+	            k=1;
+	            break;
+            case 0x02:
+                  for(j=0 ;j<6;j++){
+                      EMIF(IIR_CH_SEL)=1 << j;//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
+                      ad_temp = 0x0000000000000000;
+                      ad_data[3]= EMIF(IIR_CH_DATA(0)) ;
+                      ad_data[2]= EMIF(IIR_CH_DATA(1)) ;
+                      ad_data[1]= EMIF(IIR_CH_DATA(2)) ;
+                      ad_data[0]= EMIF(IIR_CH_DATA(3)) ;
+                      ad_sorce_float[j]= ad_temp;
+                  }
+                 k=6;
+                break;
+	        case 0x03:
+	            EMIF(CHANNEL_SEL)=0X20;
+	            ad_sorce_int = 0;
+	            ad_sorce_int = EMIF(CHANNEL_DATA_H);
+	            ad_sorce_int= ad_sorce_int<<16;
+	            ad_sorce_int|= EMIF(CHANNEL_DATA_L);
+	            ad_sorce_float[5]=ad_sorce_int;
+
+	              for(j=0 ;j<5;j++){
+	                  ad_sorce_int = 0;
+	                  ad_sorce_int = EMIF(AD_2500(j,0));
+	                  ad_sorce_int = ad_sorce_int<<16;
+	                  ad_sorce_int|= EMIF(AD_2500(j,1));
+	                  ad_sorce_float[j]=ad_sorce_int;
+	              }
+                 k=6;
+	            break;
+
+	        default:
+                break;
+	        }
+
+			if(m_ad_interface != 0){
+			    for(j=0;j<k;j++)
+			    m_ad_interface->recv(m_ad_interface,(unsigned char*)&(ad_sorce_float[j]),&length);
+			}
 			updata_cnt=0;
-
 	    }
 	    else
 	    {
@@ -401,7 +404,7 @@ static void GPIOIsr4(void)
       if(temp & 0x01 == 0x01)   //判断是否为HDLC中断
       {
 
-    	  hdlc_error=(HDLC_rx_status_addr>>9)&0x07;
+    	  hdlc_error=(HDLC_rx_status_addr>>10)&0x07;
     	  if(hdlc_error==0)
     	  {
     		  my_hdlc->recv(my_hdlc,data_temp,&datalen);
@@ -801,6 +804,11 @@ static void GPIOPinMuxSetup()
 //
 //void PhaseTest(void)
 //{
+//int AD_MEASUER;
+//int AD_MEASUER2;
+//int AD_MEASUER3;
+//int AD_MEASUER4;
+//int AD_MEASUER5;
 //	/*相位校正时用*/
 //	CHANNEL_SEL=0X20;
 //	if (k <5000)

@@ -12,7 +12,7 @@
 #include "mnic_timer.h"
 #include "mnic_test.h"
 #include "fpga.h"
-#include "AD.h"
+
 
 static void TimerIsr();
 
@@ -111,7 +111,7 @@ static void TimerIsr()
 			timer_count_20ms=0;
 			//VM_IM_CtrlOutPut();  //波形输出
 	    }
-	if(timer_count_50ms%50==0)  //50ms   20Hz
+	if(timer_count_50ms%1000==0)  //1Hz
 		{
 		timer_count_50ms=0;
 		Data_Exchange_Flag=1;       //数据传输

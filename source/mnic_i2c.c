@@ -4,44 +4,18 @@
  *  Created on: 2019-11-15
  *      Author: Administrator
  */
-
-#include "pll.h"
-#include "psc.h"
-#include "ddr.h"
-#include "timer.h"
-#include "hw_syscfg0_C6748.h"
 #include "interrupt.h"
 #include "soc_C6748.h"
-#include "mnic_C6748.h"
-#include "mnic_timer.h"
-#include "mnic_gpio.h"
-#include "mnic_emif.h"
-#include "mnic_test.h"
-#include "hw_types.h"
+
 #include "fpga.h"
-#include "Init.h"
-#include "rs232_rs422.h"
-#include "mnic_nor.h"
-#include "spi.h"
-#include "mini_spi.h"
-#include "AD.h"
-#include "Data_Exchange.h"
-#include "Nav.h"
 #include "stdio.h"
-#include "MBox.h"
-#include "HDLC.h"
-#include "pid_func.h"
+
 #include "mnic_i2c.h"
 #include "i2c.h"
-#include "hw_i2c.h"
-#include "tms320c6748_sysconfig.h"
-#include "types.h"
-#include "mnic_interrupt.h"
-//#include "include.h"
-#include "gpio.h"
+
 extern unsigned int count;
 extern unsigned int flag;
-extern unsigned char dataToSlave[2];
+unsigned char dataToSlave[2];
 
 /* I2C address of TCA6416 expander. */
 #define I2C_SLAVE_ADDR            (0x48u)
@@ -50,7 +24,7 @@ void SetupI2C(void);
 void SetupIntc(void);
 void SetupI2CTransmit(void);
 void BlinkDelay(void);
-
+extern void Delay1();
 void i2c_init()
 {
 	long long i;

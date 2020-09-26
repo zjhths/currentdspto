@@ -1,7 +1,7 @@
 #include "interface_da.h"
-//#include "fpga.h"
-unsigned int wave=0;
 
+unsigned int wave=0;
+extern void Delay1();
 Da_interface* new_da_interface()
 {
 	Da_interface* real_core	 = (Da_interface*)malloc(sizeof(Da_interface));

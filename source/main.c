@@ -14,36 +14,36 @@
 #include "fpga.h"
 #include "interface_da.h"
 #include "Init.h"
-#include "rs232_rs422.h"
+
 #include "mnic_nor.h"
 #include "spi.h"
-#include "mini_spi.h"
-#include "AD.h"
-#include "Data_Exchange.h"
-#include "Nav.h"
+
+
+
 #include "stdio.h"
-#include "MBox.h"
-#include "HDLC.h"
-#include "pid_func.h"
+
+
+
 #include "mnic_i2c.h"
 #include "mnic_interrupt.h"
 #include "gpio.h"
-#include "func.h"
+
 
 #include "comm_factory.h"
 #include <protocol_analyze.h>
 
 #include "math.h"
-long long V_data=0;
+#include "mini_spi.h"
+#include "mnic_i2c.h"
+#include "Init.h"
 long long pid_a=0,pid_b=0;
 unsigned int count,flag;
-unsigned char dataToSlave[2];
 
-double datai_to_da_pid=0,datav_to_da_pid=0;
+
 double datav_to_da = 0;
 //unsigned int AD_2500_1;
 
-long long AD_2500_4;
+
 
 
 
@@ -78,7 +78,7 @@ double q;
 double r;
 long long q_d;
 long long r_d;
-double v_mea_data_mix;
+
 //double mea_data_2500；
 //double v_mea_data_2500;
 
@@ -86,7 +86,7 @@ long long AD_kal_1;
 long long AD_kal_2;
 long long AD_kal_3;
 long long AD_kal_4;
-unsigned int DAV_CONV =100371650;
+
 int DA_DATA=0;
 float wwwi;
 float datai_to_da = 0;
@@ -97,11 +97,7 @@ unsigned int wave_cnt=0;
 int bias;
 float DA_SET;
 
-int AD_MEASUER;
-int AD_MEASUER2;
-int AD_MEASUER3;
-int AD_MEASUER4;
-int AD_MEASUER5;
+
 int ad_pid;
 
 
@@ -154,7 +150,7 @@ void SetOutWave()
 	//正弦波输出
     unsigned int i=0;
     float m_frequncy=1,m_amplitude=1;
-    double m_double=0.2;
+    double m_double=0.0002;
     double m_Q=0,m_R=1;
     unsigned int int_frequncy=0;
     unsigned char *p_float =( unsigned char *)&m_frequncy;
@@ -182,10 +178,10 @@ void SetOutWave()
 //		SIN_AMP_LH=0x47ae;
 //		SIN_AMP_LL=0x147b;
 
-	 	SIN_AMP_HH=0x3fb9;//0.1
-	 	SIN_AMP_HL=0x9999;
-	 	SIN_AMP_LH=0x9999;
-	 	SIN_AMP_LL=0x999a;
+//	 	SIN_AMP_HH=0x3fb9;//0.1
+//	 	SIN_AMP_HL=0x9999;
+//	 	SIN_AMP_LH=0x9999;
+//	 	SIN_AMP_LL=0x999a;
 
 //	 	SIN_AMP_HH=0x3ff0;  //1
 //	 	SIN_AMP_HL=0x0000;
@@ -202,23 +198,23 @@ void SetOutWave()
 	// 	SIN_AMP_LH=0x0000;
 	// 	SIN_AMP_LL=0x0000;
 
-		SIN_FRQ_H=0x0001;//200HZ:666666 160HZ:51eb85 120HZ:3d70a4 80HZ:28f5c3 40HZ:147ae1
-		SIN_FRQ_L=0x47ae;
-		WAVE_SEL=0x8;//正弦波
-	 	DA_VI_SEL=0x0;//电压1 电流0
-	 	DA_CONFIG_SEL=0X1;
-	 	Delay1();
+//		SIN_FRQ_H=0x0014;//200HZ:666666 160HZ:51eb85 120HZ:3d70a4 80HZ:28f5c3 40HZ:147ae1
+//		SIN_FRQ_L=0x7ae1;
+//		WAVE_SEL=0x8;//正弦波
+//	 	DA_VI_SEL=0x0;//电压1 电流0
+//	 	DA_CONFIG_SEL=0X1;
+//	 	Delay1();
 
 	// //常值输出
-//		 WAVE_SEL=0x1;
-//		 DA_VI_SEL=0x0;//电压1 电流0
-//		 DA_CONFIG_SEL=0x1;//开环输出：0  闭环：1
-//		 Delay1();
-//	//	 SET_POINT_HH= 0x0000 ; //0
-//	//	 SET_POINT_HL= 0x0000 ;
-//	//	 SET_POINT_LH= 0x0000 ;
-//	//	 SET_POINT_LL= 0x0000 ;
-//	//	 Delay1();
+		 WAVE_SEL=0x1;
+		 DA_VI_SEL=0x0;//电压1 电流0
+		 DA_CONFIG_SEL=0x1;//开环输出：0  闭环：1
+		 Delay1();
+		 SET_POINT_HH= 0x0000 ; //0
+		 SET_POINT_HL= 0x0000 ;
+		 SET_POINT_LH= 0x0000 ;
+		 SET_POINT_LL= 0x0000 ;
+		 Delay1();
 //		 SET_POINT_HH= 0xbf40 ; //-0.0005 bf40624dd2f1a9fc
 //		 SET_POINT_HL= 0x624d ;
 //		 SET_POINT_LH= 0xd2f1 ;
@@ -384,7 +380,7 @@ int main(void){
 //1281初始化配置寄存器
 	AD1281_init();
 //DA校准以及AD校准
-	//Flash_data_init();
+//	Flash_data_init();
 //配置FPGA寄存器
 //ad检测配置校准器
 	ADPara_init();

@@ -14,22 +14,7 @@
  
 #include "fifo.h"
  
-/**
-* @brief fifo结构
-*/
- 
-typedef struct
-{
-    int ptr_write;
-    int ptr_read;
-    bool is_full;
- 
-    // fifo中存储的元素数,不是字节大小
-    int item_sum;
-    // 元素大小.单位: 字节
-    int item_size;
-    void *fifo_ptr;
-} Fifo;
+
  
 /**
 * @brief 创建fifo

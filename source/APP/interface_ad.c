@@ -1,16 +1,18 @@
 #include "interface_ad.h"
 
-
+void * ad_recv_mem;
 Ad_interface* new_ad_interface()
 {
-
+    Fifo *fifo = 0;
 	Ad_interface* real_core	 = (Ad_interface*)malloc(sizeof(Ad_interface));
 
 	real_core->init      = Ad_Init;
 	real_core->send		 = Ad_Send;
 	real_core->recv   	 = Ad_Recv;
 
-	real_core->recv_fifo = fifo_create(300, 4);
+	real_core->recv_fifo = fifo_create(6*3000, 4);
+	fifo =(Fifo *)(real_core->recv_fifo);
+	ad_recv_mem = (fifo->fifo_ptr);
 	real_core->init(real_core);
 
 	return real_core;

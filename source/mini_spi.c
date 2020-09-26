@@ -9,10 +9,8 @@
 #include "psc.h"
 #include "interrupt.h"
 #include "mini_spi.h"
-#include "spi.h"
-//#include "wizchip_conf.h"
-#include "string.h"
-#include "fpga.h"
+
+
 #include "gpio.h"
 
 /* value to configure SMIO,SOMI,CLK and CS pin as functional pin */

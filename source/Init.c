@@ -5,11 +5,12 @@
 #include "interface_da.h"
 #include "control_variable.h"
 #include <protocol_analyze.h>
+#include "mnic_nor.h"
 unsigned short VID_R,PID_R;
-Da_Variable m_da_variable={{1.0259e+08,0}};
+Da_Variable m_da_variable={{102683227.8,-1.07483E-11}};
 Ad_Phase     m_ad_phase   ={48,48,52,53,10,1};
-Ad_Variable m_ad_variable={{{-7.11E-13,0},{-1.42E-11,0},{-7.19E-11,0},{-7.56E-10,0},{4.66E-09,0}},
-                                                 {4.68E-09,0}};
+Ad_Variable m_ad_variable={{{7.181988000000E-13,-9.599506000000E-05},{7.110370000000E-12,-5.874496000000E-05},{7.194612000000E-11,3.614268000000E-04},{7.029383333333E-10,4.156666666667E-03},{-2.329782000000E-09,-1.203800000000E-02}},
+                                                 {-4.744116000000E-09,-1.903968000000E-04}};
  Fusion_Parameters fusion={{{0,           0,            0,           0,          0           },
                                                 {0,            0,            0,           0.7620,  0.2380},
                                                 {0,            0,            0.4790,  0.3970,  0.2380},
@@ -34,19 +35,19 @@ void fpga_init()
 }
 void Flash_data_init(){
     unsigned int offset=0;
-    NOR_read(NOR_FLASH_DATA_BASE,(unsigned char*)&(m_da_variable)+offset,sizeof(Da_Variable)/2);
+    NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(m_da_variable),sizeof(Da_Variable)/2);
     offset+=sizeof(Da_Variable);
-    NOR_read(NOR_FLASH_DATA_BASE,(unsigned char*)&(m_ad_phase)+offset,sizeof(Ad_Phase)/2);
+    NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(m_ad_phase),sizeof(Ad_Phase)/2);
     offset+=sizeof(Ad_Phase);
-    NOR_read(NOR_FLASH_DATA_BASE,(unsigned char*)&(m_ad_variable)+offset,sizeof(Ad_Variable)/2);
+    NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(m_ad_variable),sizeof(Ad_Variable)/2);
     offset+=sizeof(Ad_Variable);
-    NOR_read(NOR_FLASH_DATA_BASE,(unsigned char*)&(fusion)+offset,sizeof(Fusion_Parameters)/2);
+    NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(fusion),sizeof(Fusion_Parameters)/2);
     offset+=sizeof(Fusion_Parameters);
-    NOR_read(NOR_FLASH_DATA_BASE,(unsigned char*)&(m_pusion_parameters)+offset,sizeof(Kalman_Parameters)/2);
+    NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(m_pusion_parameters),sizeof(Kalman_Parameters)/2);
     offset+=sizeof(Kalman_Parameters);
-    NOR_read(NOR_FLASH_DATA_BASE,(unsigned char*)&(m_calib_struct)+offset,sizeof(Calib_Struct)/2);
+    NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(m_calib_struct),sizeof(Calib_Struct)/2);
     offset+=sizeof(Calib_Struct);
-    NOR_read(NOR_FLASH_DATA_BASE,(unsigned char*)&(m_pid_struct)+offset,sizeof(PID_Struct)/2);
+    NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(m_pid_struct),sizeof(PID_Struct)/2);
 }
 
 void channaldelay_init()
@@ -89,11 +90,10 @@ void DAPara_init()
 }
 void ADPara_init()
 {
-    int i=0,j=0,k=0;
+    int j=0,k=0;
 	unsigned short* data_tamp_ptr=0;
-	for(i=2 ;i<5;i++){
-	    EMIF(FUSION_CH_STATUS)=i;
-	    for(j=0 ;j<4;j++){
+
+	    for(j=0 ;j<5;j++){
 	        data_tamp_ptr =(unsigned short*)&(m_ad_variable.ad_linear2500[j].da_proportion);
 	        for(k=0 ;k<4;k++){
 	             EMIF(AD2500_PARAM_I(j,k))=*(data_tamp_ptr+3-k);
@@ -103,16 +103,15 @@ void ADPara_init()
                  EMIF(AD2500_OFFSET_I(j,k))=*(data_tamp_ptr+3-k);
             }
 	    }
-	}
 
     for(j=0 ;j<1;j++){
         data_tamp_ptr =(unsigned short*)&(m_ad_variable.ad_linear1281.da_proportion);
         for(k=0 ;k<4;k++){
-             EMIF(AD2500_PARAM_I(j,k))=*(data_tamp_ptr+3-k);
+             EMIF(AD1281_PARAM_I(k))=*(data_tamp_ptr+3-k);
         }
         data_tamp_ptr =(unsigned short*)&(m_ad_variable.ad_linear1281.da_offset);
         for(k=0 ;k<4;k++){
-             EMIF(AD2500_OFFSET_I(j,k))=*(data_tamp_ptr+3-k);
+             EMIF(AD1281_OFFSET_I(k))=*(data_tamp_ptr+3-k);
         }
     }
 }

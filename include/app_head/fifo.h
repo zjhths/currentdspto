@@ -8,7 +8,24 @@
 #include "stdbool.h"
 #include "string.h"
 #include "math.h"
+ /**
+* @brief fifo结构
+*/
  
+typedef struct
+{
+    int ptr_write;
+    int ptr_read;
+    bool is_full;
+
+    // fifo中存储的元素数,不是字节大小
+    int item_sum;
+    // 元素大小.单位: 字节
+    int item_size;
+    void *fifo_ptr;
+} Fifo;
+
+void fifo_clear(int fifo_index);
 /**
 * @brief 创建fifo
 * @param item_sum：fifo中元素数.注意不是字节数

@@ -15,6 +15,21 @@
 #define CHANNEL_ADDR 0x41//0x41~0x44四个通道;
 #define CHANNEL_ALL_ADDR 0x45//0x45全通道；
 
+#define CMD_REST                                           0xFF
+#define CMD_RECV_AD                                    0x03
+#define CMD_SET_CURRENT                            0x31
+#define CMD_SET_VOLTAGE                            0x32
+
+#define PC_CMD_SET_VARIABLE                      0x73
+#define PC_CMD_DA_VARIABLE                       0x74
+#define PC_CMD_AD_PHASE                            0x75
+#define PC_CMD_AD_VARIABLE                       0x76
+#define PC_CMD_FUSION_PARAMETERS        0x77
+#define PC_CMD_KALMAN_PARAMETERS      0x78
+#define PC_CMD_CAILIB_STRUCT                    0x79
+#define PC_CMD_PID_STRUCT                         0x7A
+
+
 #define REMOTE_CMD_BEGIN                         0x21
 #define REMOTE_CMD_CURRENT_OUTPUT    0x23
 #define REMOTE_CMD_VOLTAGE_OUTPUT    0x24
@@ -23,7 +38,7 @@
 #define REMOTE_CMD_STOP                           0x29
 
 #define ANALYZE_DATA_SIZE 512
-#define AD_DATA_SIZE 400
+#define AD_DATA_SIZE 408
 
 #define NOR_FLASH_DATA_BASE              (0x60000000+128*0x8000)
 
@@ -32,6 +47,7 @@
 #define WAVE_TRI               0x04//三角
 #define WAVE_SIN              0x08//正弦
 
+#pragma pack(1)
 
 typedef enum Analyze_Type
 {
@@ -40,7 +56,15 @@ typedef enum Analyze_Type
     recv_ad_cmd_func,
     recv_ad_data_func,
     set_mode_func,
+
     updata_variable_mode_func,
+    updata_da_variable_func,
+    updata_ad_phase_func,
+    updata_ad_variable_func,
+    updata_fusion_parameters_func,
+    updata_kalman_parameters_func,
+    updata_calib_struct_func,
+    updata_pid_struct_func,
 
     remote_begin,
     remote_output,
@@ -88,6 +112,7 @@ typedef struct protocol_ad_modle_set_struct
     unsigned char amplitude[4];
 }protocol_ad_modle_set_struct;
 /*===============================*/
+
 typedef struct protocol_updata_variable_struct
 {
     protocol_handle_struct m_handle;
@@ -99,6 +124,7 @@ typedef struct protocol_updata_variable_struct
     Calib_Struct  up_calib_struct;
     PID_Struct up_pid_struct;
 }protocol_updata_variable_struct;
+
 //++++++++++++++++外部HDLC命令集++++++++++++++++++++//
 typedef struct protocol_remote_struct
 {
@@ -124,7 +150,7 @@ typedef struct protocol_analyze_interface
     void (*analyze)(struct protocol_analyze_interface* m_protocol_analyze);
 }protocol_analyze_interface;
 
-
+#pragma pack()
 //函数
 void protocol_analyze(protocol_analyze_interface* interface);
 
@@ -134,12 +160,9 @@ int protocol_rest(protocol_analyze_interface* interface,unsigned char* sources);
 int protocol_recv_ad_cmd(protocol_analyze_interface* interface,unsigned char* sources);
 int protocol_recv_ad_data(protocol_analyze_interface* interface,unsigned char* sources);
 int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sources);
-int protocol_updata_variable_mode(protocol_analyze_interface* interface,unsigned char* sources);
 
-int protocol_remote_begin(protocol_analyze_interface* interface,unsigned char* sources);
-int protocol_remote_output(protocol_analyze_interface* interface,unsigned char* sources);
-int protocol_remote_returns_data(protocol_analyze_interface* interface,unsigned char* sources);
-int protocol_remote_stop(protocol_analyze_interface* interface,unsigned char* sources);
+
+
 
 
 protocol_analyze_interface* new_protocol_analyze_interface();

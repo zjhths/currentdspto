@@ -128,7 +128,7 @@ extern void I2CStatusClear(unsigned int baseAddr, unsigned int status);
 extern void I2CMasterStop(unsigned int baseAddr);
 extern unsigned int I2CSlaveAddressGet(unsigned int baseAddr);
 extern void I2CPinMuxSetup(unsigned int instanceNum);//by xh
-
+void i2c_init();
 #ifdef __cplusplus
 }
 #endif
