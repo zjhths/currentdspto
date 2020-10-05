@@ -41,7 +41,10 @@ extern void Delay1();
 int updata_cnt=0;
 int cnt=0;
 unsigned char channal_zero=0x00;//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
-
+unsigned int ad_updata = 4;
+unsigned int main_updata_count = 0;
+float main_updata[2] = {0};
+extern unsigned int pkg_num;
 /****************************************************************************/
 /*              LOCAL FUNCTION PROTOTYPES                                   */
 /****************************************************************************/
@@ -291,35 +294,54 @@ static void GPIOIsr3(void)
 		unsigned int length=1,ad_sorce_int=0,j=0,k=0;
 		double ad_temp;
         unsigned short *ad_data = (unsigned short *)&(ad_temp);
-        float ad_sorce_float[6];
+        double  ad_sorce_double[6];
 
 		/*¹Ø±ÕGPIO bank8Òý½ÅÖÐ¶Ï*/
 	    GPIOBankIntDisable(SOC_GPIO_0_REGS, 6);
 
-	    if (updata_cnt >=0)
+	    if (updata_cnt >=ad_updata)
 	    {
 	        switch(channal_zero){
-            case 0x00:
+	        case 0x00:
+	            k=0;
+                ad_temp = 0x0000000000000000;
+                ad_data[3]= EMIF(CALIB_OUT(0)) ;
+                ad_data[2]= EMIF(CALIB_OUT(1)) ;
+                ad_data[1]= EMIF(CALIB_OUT(2)) ;
+                ad_data[0]= EMIF(CALIB_OUT(3)) ;
+	            if(1 == main_updata_count){
+	                main_updata[main_updata_count]= ad_temp/-50*1000;
+	                memcpy(ad_sorce_double,main_updata,8);
+	                k=1;
+	                main_updata_count=0;
+	            }else if(0 == main_updata_count){
+	               main_updata[main_updata_count]= ad_temp/-50*1000;
+	               main_updata_count++;
+	            }
+	            else
+	                main_updata_count=0;
+	            break;
+            case 0x01:
                 ad_temp = 0x0000000000000000;
                 ad_data[3]= EMIF(CALIB_OUT(0)) ;
                 ad_data[2]= EMIF(CALIB_OUT(1)) ;
                 ad_data[1]= EMIF(CALIB_OUT(2)) ;
                 ad_data[0]= EMIF(CALIB_OUT(3)) ;
 
-                ad_sorce_float[0]= ad_temp/-50*1000;
+                ad_sorce_double[0]= ad_temp/-50*1000;
                 k=1;
                 break;
-	        case 0x01:
+	        case 0x02:
 	            ad_temp = 0x0000000000000000;
 	            ad_data[3]= EMIF(AD_OUT_DATA(0)) ;
 	            ad_data[2]= EMIF(AD_OUT_DATA(1)) ;
 	            ad_data[1]= EMIF(AD_OUT_DATA(2)) ;
 	            ad_data[0]= EMIF(AD_OUT_DATA(3)) ;
 
-	            ad_sorce_float[0]= ad_temp/-50*1000;
+	            ad_sorce_double[0]= ad_temp/-50*1000;
 	            k=1;
 	            break;
-            case 0x02:
+            case 0x03:
                   for(j=0 ;j<6;j++){
                       EMIF(IIR_CH_SEL)=1 << j;//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
                       ad_temp = 0x0000000000000000;
@@ -327,24 +349,25 @@ static void GPIOIsr3(void)
                       ad_data[2]= EMIF(IIR_CH_DATA(1)) ;
                       ad_data[1]= EMIF(IIR_CH_DATA(2)) ;
                       ad_data[0]= EMIF(IIR_CH_DATA(3)) ;
-                      ad_sorce_float[j]= ad_temp;
+                      ad_sorce_double[j]= ad_temp;
                   }
+                  //ad_sorce_double[5] = pkg_num;
                  k=6;
                 break;
-	        case 0x03:
+	        case 0x04:
 	            EMIF(CHANNEL_SEL)=0X20;
 	            ad_sorce_int = 0;
 	            ad_sorce_int = EMIF(CHANNEL_DATA_H);
 	            ad_sorce_int= ad_sorce_int<<16;
 	            ad_sorce_int|= EMIF(CHANNEL_DATA_L);
-	            ad_sorce_float[5]=ad_sorce_int;
+	            ad_sorce_double[5]=ad_sorce_int;
 
 	              for(j=0 ;j<5;j++){
 	                  ad_sorce_int = 0;
 	                  ad_sorce_int = EMIF(AD_2500(j,0));
 	                  ad_sorce_int = ad_sorce_int<<16;
 	                  ad_sorce_int|= EMIF(AD_2500(j,1));
-	                  ad_sorce_float[j]=ad_sorce_int;
+	                  ad_sorce_double[j]=ad_sorce_int;
 	              }
                  k=6;
 	            break;
@@ -355,7 +378,7 @@ static void GPIOIsr3(void)
 
 			if(m_ad_interface != 0){
 			    for(j=0;j<k;j++)
-			    m_ad_interface->recv(m_ad_interface,(unsigned char*)&(ad_sorce_float[j]),&length);
+			    m_ad_interface->recv(m_ad_interface,(unsigned char*)&(ad_sorce_double[j]),&length);
 			}
 			updata_cnt=0;
 	    }

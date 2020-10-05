@@ -91,11 +91,11 @@
 #define           CHANNEL_DLY(X)  (0x620003D0+4*X)
 #define           FIFO_RST         (0x620003E8)
 //二次校正比例系数
-#define           CALIB_PARA(X)  (0x620003E8+4*X)
+#define           CALIB_PARA(X)  (0x62000378+4*X)
 //二次校正偏置
-#define           CALIB_OFFSET(X)  (0x620003F8+4*X)
+#define           CALIB_OFFSET(X)  (0x62000388+4*X)
 //校正后数据，进入pid
-#define           CALIB_OUT(X)  (0x62000408+4*X)
+#define           CALIB_OUT(X)  (0x62000398+4*X)
 //以上为与FPGA的emif通行设定的寄存器
 
 //     #define	sys_reset  		    (0x62000008)

@@ -28,7 +28,7 @@
 #define PC_CMD_KALMAN_PARAMETERS      0x78
 #define PC_CMD_CAILIB_STRUCT                    0x79
 #define PC_CMD_PID_STRUCT                         0x7A
-
+#define PC_CMD_SYSTEM_STRUCT                 0x7B
 
 #define REMOTE_CMD_BEGIN                         0x21
 #define REMOTE_CMD_CURRENT_OUTPUT    0x23
@@ -38,7 +38,7 @@
 #define REMOTE_CMD_STOP                           0x29
 
 #define ANALYZE_DATA_SIZE 512
-#define AD_DATA_SIZE 408
+#define AD_DATA_SIZE 480
 
 #define NOR_FLASH_DATA_BASE              (0x60000000+128*0x8000)
 
@@ -65,6 +65,7 @@ typedef enum Analyze_Type
     updata_kalman_parameters_func,
     updata_calib_struct_func,
     updata_pid_struct_func,
+    updata_system_struct_func,
 
     remote_begin,
     remote_output,

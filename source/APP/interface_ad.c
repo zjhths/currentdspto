@@ -10,7 +10,7 @@ Ad_interface* new_ad_interface()
 	real_core->send		 = Ad_Send;
 	real_core->recv   	 = Ad_Recv;
 
-	real_core->recv_fifo = fifo_create(6*3000, 4);
+	real_core->recv_fifo = fifo_create(6*1500, 8);
 	fifo =(Fifo *)(real_core->recv_fifo);
 	ad_recv_mem = (fifo->fifo_ptr);
 	real_core->init(real_core);
@@ -43,7 +43,7 @@ void Ad_Send(Ad_interface* interface, unsigned char* data,unsigned int length){
 void Ad_Recv(Ad_interface* interface, unsigned char* data,unsigned int* length){
     unsigned int* data_length=length;
     unsigned int i=0;
-    unsigned short data_len=4;
+    unsigned short data_len=8;
     unsigned char data_temp[8];
     unsigned short data_len_temp=0;
     for(i=0;i<*data_length;i++)

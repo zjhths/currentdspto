@@ -392,8 +392,10 @@ int main(void){
 	FUSION_init();
 //PID配置
 	PID_init();
+
+	Calib_Para_init();
 //测试用，控制内部模块跳过
-	 EMIF(CONTROL_BYPASS)= 0x02;//1跳过kalman   2：跳过pid  4:跳过iir 8:跳过final iir 10：跳过1281平均 0xD:只有PID
+	sys_int();//1跳过kalman   2：跳过pid  4:跳过iir 8:跳过final iir 10：跳过1281平均 0xD:只有PID
 //以上初始化配置完毕
 
 
@@ -441,7 +443,6 @@ int main(void){
 	    model_list[work_status]->process(model_list[work_status]);
 	    work_status++;
 	    p_protocol_analyze->analyze(p_protocol_analyze);
-
 	}
 }
 /*****************************END OF FILE************************************/

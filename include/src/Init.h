@@ -3,7 +3,7 @@
 #ifndef INIT_H_
 #define INIT_H_
 
-
+void sys_int();
 
 void fpga_init();	//FPGA≥ı ºªØ
 
@@ -22,4 +22,7 @@ void PID_init();
 void ADPara_init();
 
 void DAPara_init();
+
+void Calib_Para_init();
+
 #endif /* BH_FUNINIT_H_ */

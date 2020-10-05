@@ -18,10 +18,12 @@ Analyze_Type func_type =idle_func;
 PF m_protocol_analyze_list[] = {protocol_idle, protocol_rest, protocol_recv_ad_cmd, protocol_recv_ad_data, protocol_set_mode,
                                                      protocol_updata_variable_mode, protocol_updata_da_variable, protocol_updata_ad_phase, protocol_updata_ad_variable,
                                                      protocol_updata_fusion_parameters, protocol_updata_kalman_parameters, protocol_updata_calib_struct, protocol_updata_pid_struct,
+                                                     protocol_updata_system_struct,
                                                      protocol_remote_begin, protocol_remote_output,protocol_remote_returns_data,protocol_remote_stop,};
 unsigned char protocol_data_source[ANALYZE_DATA_SIZE];
 unsigned int signal_list[10]={0};
-
+//test code
+unsigned int pkg_num = 0;
 protocol_analyze_interface* new_protocol_analyze_interface()
 {
     protocol_analyze_interface* real_core    = (protocol_analyze_interface*)malloc(sizeof(protocol_analyze_interface));
@@ -55,7 +57,8 @@ case PC_CMD_CAILIB_STRUCT:
     return updata_calib_struct_func;
 case PC_CMD_PID_STRUCT:
     return updata_pid_struct_func;
-
+case  PC_CMD_SYSTEM_STRUCT:
+    return updata_system_struct_func;
 //Ô¶³Ì¼ÆËã»ú
 case REMOTE_CMD_BEGIN:
    return remote_begin;
@@ -102,16 +105,14 @@ return 0;
 }
 
 int protocol_rest(protocol_analyze_interface* interface,unsigned char* sources){
+    func_type = idle_func;
     fifo_clear(interface->ad_input_fifo);
 return 0;
 }
 
 int protocol_recv_ad_cmd(protocol_analyze_interface* interface,unsigned char* sources){
-
-   // fifo_clear(interface->ad_input_fifo);
-    signal_list[2]--;
-    if(signal_list[2] <= 0)
     func_type = idle_func;
+   fifo_clear(interface->ad_input_fifo);
     return 0;
 }
 
@@ -131,10 +132,11 @@ int protocol_recv_ad_data(protocol_analyze_interface* interface,unsigned char* s
             send_pc_data.data_source_addr = CHANNEL_ADDR;
             send_pc_data.work_mode = 0x34;
             temp_data  =  (*(unsigned short int *)0x62000310);
-            send_pc_data.temp[1] = temp_data;
-            send_pc_data.temp[0] = temp_data >> 8;
-            for(i = 0;i<102;i++){
-                fifo_read(interface->ad_input_fifo, &(send_pc_data.data_sorce[i*4]),&data_len);
+            //temp_data = pkg_num++;
+            send_pc_data.temp[0] = temp_data;
+            send_pc_data.temp[1] = temp_data >> 8;
+            for(i = 0;i<60;i++){
+                fifo_read(interface->ad_input_fifo, &(send_pc_data.data_sorce[i*8]),&data_len);
             }
             //fifo_read_batch(interface->ad_input_fifo, send_pc_data.data_sorce, 100);
             data_len=sizeof(send_pc_data);
@@ -257,7 +259,7 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
 
     }
 
-   // CONTROL_BYPASS= 0x0;
+    EMIF(CONTROL_BYPASS)= 0x0;
     //m_ad_modle_set->frequncy
     return 0;
 }
