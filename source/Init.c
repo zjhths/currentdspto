@@ -7,54 +7,78 @@
 #include <protocol_analyze.h>
 #include "mnic_nor.h"
 unsigned short VID_R,PID_R;
-//ch2
-Da_Variable m_da_variable={{102692047.7,-461857.4844}};
-Ad_Phase     m_ad_phase   ={48,48,52,53,10,1};
-Ad_Variable m_ad_variable={{{7.105824000000E-13,-6.287694000000E-05},
-                                                   {7.105498000000E-12,-6.287694000000E-05},
-                                                   {7.191182000000E-11,-6.486302000000E-05},
-                                                   {7.055647500000E-10,-1.961454950000E-02},
-                                                   {-2.330048000000E-09,-1.412000000000E-03}},
-                                                 {-4.671012000000E-09,-3.408688000000E-05}};
- Fusion_Parameters fusion={{{0,           0,            0,           0,          1          },
-                                                {0,            0,            0,           7.8610213E-01,  2.1389787E-01},
-                                                {0,            0,            7.5039052E-01,   1.9621855E-01,   5.3390937E-02},
-                                                {0,            4.9903597E-01,   3.7591866E-01,  9.8298434E-02,   2.6746939E-02},
-                                                { 3.3162878E-01,   3.3354128E-01,   2.5125321E-01,  6.5699844E-02,   1.7876884E-02}}};
+//Da_Variable m_da_variable={{102437751.6,93756.02407}};
+//Ad_Phase     m_ad_phase   ={48,48,52,53,10,1};
+//
+//Ad_Variable m_ad_variable={{{7.105886000000E-13,-2.5924525774387E-05},
+//                                                   {7.108116000000E-12,-2.4408081057949E-05},
+//                                                   {7.187226000000E-11,-6.0531083853738E-05},
+//                                                   {7.034150000000E-10,2.2758953953330E-04},
+//                                                   {-2.328594000000E-09,4.2791073051371E-04}},
+//                                                 {-4.617262000000E-09,-6.6502012439168E-04}};
+//
+//
+//
+//
+//
+//
+//
+// Fusion_Parameters fusion={{{0,           0,            0,           0,          1          },
+//                                                {0,            0,            0,           7.3273400E-01,  2.6726600E-01},
+//                                                {0,            0,            6.2206189E-01,   2.7692810E-01,   1.0101001E-01},
+//                                                {0,            4.5869749E-01,   3.3672366E-01,  1.4990188E-01,   5.4676970E-02},
+//                                                {3.2905482E-01,  3.0776087E-01,  2.2592312E-01,  1.0057594E-01,   3.6685250E-02}}};
 
-//ch3
-//Da_Variable m_da_variable={{102562427,-1.22838E-12}};
+//ch2
+//Da_Variable m_da_variable={{102692047.7,-461857.4844}};
 //Ad_Phase     m_ad_phase   ={48,48,52,53,10,1};
-//Ad_Variable m_ad_variable={{{7.105824000000E-13,-2.8972910997755E-05},
-//                                                  {7.119290000000E-12,-2.2151471314788E-05},
-//                                                  {7.187612000000E-11,-2.3530442771000E-06},
-//                                                  {7.031512500000E-10,9.2502719083446E-04},
-//                                                  {-2.330976000000E-09,-2.7044284385465E-03}},
-//                                                 {-4.623152000000E-09,-2.9636807820749E-05}};
-//Fusion_Parameters fusion={{{0,           0,            0,           0,          1          },
-//                                               {0,            0,            0,           8.9124175E-01,  1.0875825E-01},
-//                                               {0,            0,            8.2849089E-01,  1.5285608E-01,  1.8653031E-02},
-//                                               {0,            5.4764365E-01,   3.7477311E-01,  6.9145418E-02,  8.4378169E-03},
-//                                               {3.5489999E-01,   3.5328493E-01,   2.4176614E-01,  4.4605710E-02,  5.4432357E-03}}};
-//ch4
-//Da_Variable m_da_variable={{102498647.2,-113124.7845}};
-//Ad_Phase     m_ad_phase   ={48,48,52,53,10,1};
-//Ad_Variable m_ad_variable={{{7.181988000000E-13,-5.0115219684522E-05},
-//                                                   {7.110370000000E-12,-1.0386029027714E-05},
-//                                                   {7.194612000000E-11,3.7261588236577E-04},
-//                                                   {7.029383333333E-10,5.0802565634388E-03},
-//                                                   {-2.329782000000E-09,-1.1971411043407E-02}},
-//                                                 {-4.744116000000E-09,-1.0622955629346E-04}};
+//
+//Ad_Variable m_ad_variable={{{7.110792000000E-13,6.1209201512917E-06},
+//                                                   {7.100108000000E-12,7.0190865206265E-06},
+//                                                   {7.191182000000E-11,-1.5158736553511E-05},
+//                                                   {7.055647500000E-10,3.5855804023732E-04},
+//                                                   {-2.330048000000E-09,-1.3438651195827E-03}},
+//                                                 {-4.671012000000E-09,-3.1612176185081E-05}};
 // Fusion_Parameters fusion={{{0,           0,            0,           0,          1          },
 //                                                {0,            0,            0,           7.8610213E-01,  2.1389787E-01},
 //                                                {0,            0,            7.5039052E-01,   1.9621855E-01,   5.3390937E-02},
 //                                                {0,            4.9903597E-01,   3.7591866E-01,  9.8298434E-02,   2.6746939E-02},
 //                                                { 3.3162878E-01,   3.3354128E-01,   2.5125321E-01,  6.5699844E-02,   1.7876884E-02}}};
 
- Kalman_Parameters m_pusion_parameters={0,0};
+//ch3
+//Da_Variable m_da_variable={{102619372.9,-12928.553}};
+//Ad_Phase     m_ad_phase   ={48,48,52,53,10,1};
+//Ad_Variable m_ad_variable={{{7.105824000000E-13,2.8972910997755E-05},
+//                                                  {7.119290000000E-12,2.2151471314788E-05},
+//                                                  {7.187612000000E-11,2.3530442771000E-06},
+//                                                  {7.031512500000E-10,-9.2502719083446E-04},
+//                                                  {-2.330976000000E-09,2.7044284385465E-03}},
+//                                                 {-4.623152000000E-09,2.9636807820749E-05}};
+//Fusion_Parameters fusion={{{0,           0,            0,           0,          1          },
+//                                               {0,            0,            0,           8.9124175E-01,  1.0875825E-01},
+//                                               {0,            0,            8.2849089E-01,  1.5285608E-01,  1.8653031E-02},
+//                                               {0,            5.4764365E-01,   3.7477311E-01,  6.9145418E-02,  8.4378169E-03},
+//                                               {3.5489999E-01,   3.5328493E-01,   2.4176614E-01,  4.4605710E-02,  5.4432357E-03}}};
+//ch4
+Da_Variable m_da_variable={{102498647.2,-113124.7845}};
+Ad_Phase     m_ad_phase   ={48,48,52,53,10,1};
+Ad_Variable m_ad_variable={{{7.181988000000E-13,5.0115219684522E-05},
+                                                   {7.110370000000E-12,1.0386029027714E-05},
+                                                   {7.194612000000E-11,-3.7261588236577E-04},
+                                                   {7.029383333333E-10,-5.0802565634388E-03},
+                                                   {-2.329782000000E-09,1.1971411043407E-02}},
+                                                 {-4.744116000000E-09,1.0622955629346E-04}};
+
+ Fusion_Parameters fusion={{{0,           0,            0,           0,          1          },
+                                                {0,            0,            0,           7.8610213E-01,  2.1389787E-01},
+                                                {0,            0,            7.5039052E-01,   1.9621855E-01,   5.3390937E-02},
+                                                {0,            4.9903597E-01,   3.7591866E-01,  9.8298434E-02,   2.6746939E-02},
+                                                { 3.3162878E-01,    3.3354128E-01,   2.5125321E-01,   6.5699844E-02,   1.7876884E-02}}};
+
+ Kalman_Parameters m_pusion_parameters={2e-16,1.7155e-11};
  Calib_Struct              m_calib_struct = {{1,0}};
  PID_Struct                m_pid_struct    = {-0.6,0,0};
- System_Struct          m_system_struct = {0,0,0};
+ System_Struct          m_system_struct = {0,1,0xff};
 extern unsigned char channal_zero;//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
 extern unsigned int ad_updata;
  void sys_int(){
@@ -87,7 +111,7 @@ void Flash_data_init(){
     offset+=sizeof(Ad_Variable);
     NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(fusion),sizeof(Fusion_Parameters)/2);
     offset+=sizeof(Fusion_Parameters);
-    //NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(m_pusion_parameters),sizeof(Kalman_Parameters)/2);
+    NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(m_pusion_parameters),sizeof(Kalman_Parameters)/2);
     offset+=sizeof(Kalman_Parameters);
     NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(m_calib_struct),sizeof(Calib_Struct)/2);
     offset+=sizeof(Calib_Struct);
@@ -259,6 +283,7 @@ void AD2500_init()
 void PID_init()
 {
     double Kp=-0.6;
+    unsigned short int temp=0;
     unsigned short* data_tamp_ptr=(unsigned short*)&(m_pid_struct.pid_kp);
 	////配置PID
 		PID_KP_HH=*(data_tamp_ptr+3);// -1 bff0
@@ -275,6 +300,10 @@ void PID_init()
 		PID_KD_HL=*(data_tamp_ptr+2);
 		PID_KD_LH=*(data_tamp_ptr+1);
 		PID_KD_LL=*(data_tamp_ptr+0);
+
+	    temp  =  EMIF(FIFO_RST); //第0位：PID 复位，写1，不用写0
+	            temp |= 1;
+	            EMIF(FIFO_RST)= temp;
 }
 
 void Calib_Para_init(){
@@ -286,5 +315,17 @@ void Calib_Para_init(){
     data_tamp_ptr=(unsigned short*)&(m_calib_struct.calib_struct.da_offset);
     for(k=0 ;k<4;k++){
          EMIF(CALIB_OFFSET(k))=*(data_tamp_ptr+3-k);
+    }
+}
+
+void Kalmen_init(){
+    int k=0;
+    unsigned short* data_tamp_ptr=(unsigned short*)&(m_pusion_parameters.kalman_param_q);
+    for(k=0 ;k<4;k++){
+         EMIF(QDATA(k))=*(data_tamp_ptr+3-k);
+    }
+    data_tamp_ptr=(unsigned short*)&(m_pusion_parameters.kalman_param_rm);
+    for(k=0 ;k<4;k++){
+         EMIF(RMDATA(k))=*(data_tamp_ptr+3-k);
     }
 }

@@ -38,7 +38,7 @@
 	#define	 AD_OUT_DATA(X)     (0x62000074+4*X)
 
 //跳过模块功能
- #define	   CONTROL_BYPASS             (0x62000084)
+ #define	   CONTROL_BYPASS             (0x62000084)//1跳过kalman   2：跳过pid  4:跳过iir 8:跳过final iir 10：跳过1281平均 0xD:只有PID
 //跳过模块功能
  #define          QDATA(X)     (0x62000088+4*X)
  #define          RMDATA(X)  (0x62000098+4*X)

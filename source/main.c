@@ -380,7 +380,7 @@ int main(void){
 //1281初始化配置寄存器
 	AD1281_init();
 //DA校准以及AD校准
-//	Flash_data_init();
+ 	Flash_data_init();
 //配置FPGA寄存器
 //ad检测配置校准器
 	ADPara_init();
@@ -394,6 +394,7 @@ int main(void){
 	PID_init();
 
 	Calib_Para_init();
+	Kalmen_init();
 //测试用，控制内部模块跳过
 	sys_int();//1跳过kalman   2：跳过pid  4:跳过iir 8:跳过final iir 10：跳过1281平均 0xD:只有PID
 //以上初始化配置完毕

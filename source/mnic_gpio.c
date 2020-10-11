@@ -41,7 +41,7 @@ extern void Delay1();
 int updata_cnt=0;
 int cnt=0;
 unsigned char channal_zero=0x00;//1:CH1 2:CH2 4:CH3 8:CH4 10:CH5 20:CH1281
-unsigned int ad_updata = 4;
+unsigned int ad_updata = 1;
 unsigned int main_updata_count = 0;
 float main_updata[2] = {0};
 extern unsigned int pkg_num;
@@ -338,7 +338,7 @@ static void GPIOIsr3(void)
 	            ad_data[1]= EMIF(AD_OUT_DATA(2)) ;
 	            ad_data[0]= EMIF(AD_OUT_DATA(3)) ;
 
-	            ad_sorce_double[0]= ad_temp/-50*1000;
+	            ad_sorce_double[0]= ad_temp/-50*1000/64;
 	            k=1;
 	            break;
             case 0x03:

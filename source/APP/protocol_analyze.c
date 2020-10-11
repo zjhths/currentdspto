@@ -22,13 +22,14 @@ PF m_protocol_analyze_list[] = {protocol_idle, protocol_rest, protocol_recv_ad_c
                                                      protocol_remote_begin, protocol_remote_output,protocol_remote_returns_data,protocol_remote_stop,};
 unsigned char protocol_data_source[ANALYZE_DATA_SIZE];
 unsigned int signal_list[10]={0};
+unsigned int function_size=0;
 //test code
 unsigned int pkg_num = 0;
 protocol_analyze_interface* new_protocol_analyze_interface()
 {
     protocol_analyze_interface* real_core    = (protocol_analyze_interface*)malloc(sizeof(protocol_analyze_interface));
     real_core->analyze         = protocol_analyze;
-
+    function_size = sizeof(m_protocol_analyze_list)/sizeof(PF);
     return real_core;
 }
 unsigned char protocol_func_map(unsigned char* cmd)
@@ -76,8 +77,10 @@ case REMOTE_CMD_STOP:
     return  remote_stop;
 
 default:
-    return * cmd;
-
+    if(* cmd < function_size)
+         return * cmd;
+    else
+        return 0;
 }
 }
 void protocol_analyze(protocol_analyze_interface* interface)
@@ -125,7 +128,7 @@ int protocol_recv_ad_data(protocol_analyze_interface* interface,unsigned char* s
     if (fifo_writeable(interface->hdlc_output_fifo))
     {
         temp_data =  fifo_readable_item_count(interface->ad_input_fifo);
-        if (temp_data > 200)
+        if (temp_data > 100)
         {
 
             send_pc_data.data_locality_addr = HOST_ADDR;
@@ -133,8 +136,8 @@ int protocol_recv_ad_data(protocol_analyze_interface* interface,unsigned char* s
             send_pc_data.work_mode = 0x34;
             temp_data  =  (*(unsigned short int *)0x62000310);
             //temp_data = pkg_num++;
-            send_pc_data.temp[0] = temp_data;
-            send_pc_data.temp[1] = temp_data >> 8;
+            send_pc_data.temp[1] = temp_data;
+            send_pc_data.temp[0] = temp_data >> 8;
             for(i = 0;i<60;i++){
                 fifo_read(interface->ad_input_fifo, &(send_pc_data.data_sorce[i*8]),&data_len);
             }
@@ -179,7 +182,7 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
     switch(m_ad_modle_set->wave)
     {
     case 0x01://三角波
-          int_frequncy = 64000/m_frequncy*2;
+          int_frequncy = 64000/m_frequncy;
           m_double = fabs(m_amplitude*m_amplitude_tag/1000);//电压模式下：value = 目标电压（V）；电流模式下value = -50 * 目标电流（A）
           p_float=( unsigned char *)&int_frequncy;
           TRIANGLE_FRQ=(unsigned short )int_frequncy;
@@ -250,15 +253,14 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
         SET_POINT_LL = *(unsigned short *)&p_float[0];
         DA_CONFIG_SEL=0X1;
         EMIF(CONTROL_BYPASS)=0x2;
-        temp  =  EMIF(FIFO_RST);
-                temp |= 1;
-                EMIF(FIFO_RST)= temp;
     default:
         break;
 
 
     }
-
+    temp  =  EMIF(FIFO_RST); //第0位：PID 复位，写1，不用写0
+            temp |= 1;
+            EMIF(FIFO_RST)= temp;
     EMIF(CONTROL_BYPASS)= 0x0;
     //m_ad_modle_set->frequncy
     return 0;
