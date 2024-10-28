@@ -32,6 +32,7 @@ void TimerInit(void)
 	TimerPeriodSet(SOC_TMR_2_REGS, TMR_TIMER34, TMR_PERIOD_MSB32);
 
 	/*定时器持续计数*/
+	
 	TimerEnable(SOC_TMR_2_REGS, TMR_TIMER12, TMR_ENABLE_CONT);
 }
 

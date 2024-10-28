@@ -362,14 +362,52 @@ void Board_Init(void)
 
 }
 
-
-
-
 int i;
-#define MODLE_NUM 4
+#define MODLE_NUM 9
 Base_Core* model_list[MODLE_NUM];
 int work_status = 0;
 protocol_analyze_interface* p_protocol_analyze;
+
+// 模拟接收通讯信息的函数
+
+void simulate_receive_data(protocol_analyze_interface* p_protocol_analyze, Base_Core* model_list[], int work_status) {
+    // 模拟接收的数据
+    unsigned char simulated_data[] = {0x41,0x09,0x75};
+
+    // 将模拟数据写入对应的 FIFO
+    switch (work_status) {
+        case 0:
+            fifo_write(p_protocol_analyze->hdlc_input_fifo, simulated_data, sizeof(simulated_data));
+            break;
+        case 1:
+            fifo_write(p_protocol_analyze->uart_input_fifo, simulated_data, sizeof(simulated_data));
+            break;
+        case 2:
+            fifo_write(p_protocol_analyze->ad_input_fifo, simulated_data, sizeof(simulated_data));
+            break;
+        case 3:
+            fifo_write(p_protocol_analyze->da_output_fifo, simulated_data, sizeof(simulated_data));
+            break;
+        case 4:
+            fifo_write(p_protocol_analyze->phase_input_fifo, simulated_data, sizeof(simulated_data));
+            break;
+        case 5:
+            fifo_write(p_protocol_analyze->variable_input_fifo, simulated_data, sizeof(simulated_data));
+            break;
+        case 6:
+            fifo_write(p_protocol_analyze->fusion_input_fifo, simulated_data, sizeof(simulated_data));
+            break;
+        case 7:
+            fifo_write(p_protocol_analyze->calib_input_fifo, simulated_data, sizeof(simulated_data));
+            break;
+        case 8:
+            fifo_write(p_protocol_analyze->pid_input_fifo, simulated_data, sizeof(simulated_data));
+            break;
+        default:
+            break;
+    }
+}
+
 int main(void){
 	Board_Init();  //初始化
 	/*在这里添加主程序*/
@@ -422,6 +460,11 @@ int main(void){
 	 model_list[1]      = core_factory->create_new_core(CORE_UART);
 	 model_list[2]      = core_factory->create_new_core(CORE_AD);
 	 model_list[3]      = core_factory->create_new_core(CORE_DA);
+	 model_list[4]      = core_factory->create_new_core(CORE_PHASE);      // 新增相位校正模块
+	 model_list[5]      = core_factory->create_new_core(CORE_VARIABLE);
+	 model_list[6]      = core_factory->create_new_core(CORE_FUSION);
+	 model_list[7]      = core_factory->create_new_core(CORE_CALIB);
+	 model_list[8]      = core_factory->create_new_core(CORE_PID);
 
 	 p_protocol_analyze->hdlc_input_fifo = model_list[0]->up_in_data_list;
 	 p_protocol_analyze->hdlc_output_fifo = model_list[0]->up_out_data_list;
@@ -433,7 +476,20 @@ int main(void){
 
 	 p_protocol_analyze->da_output_fifo =model_list[3]->up_out_data_list;
 
+	 p_protocol_analyze->phase_input_fifo = model_list[4]->up_in_data_list; // 设置相位校正 FIFO
+	 p_protocol_analyze->phase_output_fifo = model_list[4]->up_out_data_list;
 
+	 p_protocol_analyze->variable_input_fifo = model_list[5]->up_in_data_list; // 设置ad变量 FIFO
+	 p_protocol_analyze->variable_output_fifo = model_list[5]->up_out_data_list;
+
+	 p_protocol_analyze->fusion_input_fifo = model_list[6]->up_in_data_list; // 设置融合参数 FIFO
+	 p_protocol_analyze->fusion_output_fifo = model_list[6]->up_out_data_list;
+
+	 p_protocol_analyze->calib_input_fifo = model_list[7]->up_in_data_list; // 设置校准参数 FIFO
+	 p_protocol_analyze->calib_output_fifo = model_list[7]->up_out_data_list;
+
+	 p_protocol_analyze->pid_input_fifo = model_list[8]->up_in_data_list; // 设置PID参数 FIFO
+	 p_protocol_analyze->pid_output_fifo = model_list[8]->up_out_data_list;
 
 	while(1)   //按照前面协议指定工作模式循环扫描工作
 	{
@@ -441,6 +497,10 @@ int main(void){
         {
             work_status =0;
         }
+
+		//模拟接收数据并测试解析功能
+        simulate_receive_data(p_protocol_analyze, model_list, work_status);
+		
 	    model_list[work_status]->process(model_list[work_status]);
 	    work_status++;
 	    p_protocol_analyze->analyze(p_protocol_analyze);

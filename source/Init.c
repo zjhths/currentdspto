@@ -16,13 +16,7 @@ unsigned short VID_R,PID_R;
 //                                                   {7.034150000000E-10,2.2758953953330E-04},
 //                                                   {-2.328594000000E-09,4.2791073051371E-04}},
 //                                                 {-4.617262000000E-09,-6.6502012439168E-04}};
-//
-//
-//
-//
-//
-//
-//
+
 // Fusion_Parameters fusion={{{0,           0,            0,           0,          1          },
 //                                                {0,            0,            0,           7.3273400E-01,  2.6726600E-01},
 //                                                {0,            0,            6.2206189E-01,   2.7692810E-01,   1.0101001E-01},
@@ -62,12 +56,9 @@ unsigned short VID_R,PID_R;
 //ch4
 Da_Variable m_da_variable={{102498647.2,-113124.7845}};
 Ad_Phase     m_ad_phase   ={48,48,52,53,10,1};
-Ad_Variable m_ad_variable={{{7.181988000000E-13,5.0115219684522E-05},
-                                                   {7.110370000000E-12,1.0386029027714E-05},
-                                                   {7.194612000000E-11,-3.7261588236577E-04},
-                                                   {7.029383333333E-10,-5.0802565634388E-03},
-                                                   {-2.329782000000E-09,1.1971411043407E-02}},
-                                                 {-4.744116000000E-09,1.0622955629346E-04}};
+Ad_Variable m_ad_variable={0};
+                                                   //{-2.329782000000E-09,1.1971411043407E-02}};
+                                                // {-4.744116000000E-09,1.0622955629346E-04}};
 
  Fusion_Parameters fusion={{{0,           0,            0,           0,          1          },
                                                 {0,            0,            0,           7.8610213E-01,  2.1389787E-01},
@@ -92,7 +83,7 @@ void fpga_init()
 //	   test_addr=0x5A;
 //        unsigned char te=test_addr;
 
-    EMIF(UART_Rest)=0xffff;   //UART复位
+    EMIF(UART_Rest)=0xffff;   //UART??λ
 		asm("	NOP");
 	EMIF(UART_Rest)=0x00;
 
@@ -117,14 +108,15 @@ void Flash_data_init(){
     offset+=sizeof(Calib_Struct);
     NOR_read(NOR_FLASH_DATA_BASE+offset,(unsigned char*)&(m_pid_struct),sizeof(PID_Struct)/2);
 }
-
+//总共4组1281+2500
 void channaldelay_init()
 {
 	int i;
-	for(i=0;i<5;i++)
-	EMIF(CHANNEL_DLY(i))=m_ad_phase.phase_calibration2500[i];//48
-
-	EMIF(CHANNEL_DLY(5))=m_ad_phase.phase_calibration1281;//1
+	for(i=0;i<4;i++)
+	{
+		EMIF(CHANNEL_DLY(i))=m_ad_phase.phase_calibration2500[i];
+		EMIF(CHANNEL_DLY(i))=m_ad_phase.phase_calibration1281[i];
+	}
 	EMIF(FIFO_RST)=0X3;
 	for(i=0;i<400;i++)
 		asm("	NOP");
@@ -164,27 +156,27 @@ void ADPara_init()
     int j=0,k=0;
 	unsigned short* data_tamp_ptr=0;
 
-	    for(j=0 ;j<5;j++){
+	    for(j=0 ;j<4;j++){
 	        data_tamp_ptr =(unsigned short*)&(m_ad_variable.ad_linear2500[j].da_proportion);
 	        for(k=0 ;k<4;k++){
-	             EMIF(AD2500_PARAM_I(j,k))=*(data_tamp_ptr+3-k);
+	            EMIF(AD2500_PARAM_I(j,k))=*(data_tamp_ptr+3-k);
 	        }
             data_tamp_ptr =(unsigned short*)&(m_ad_variable.ad_linear2500[j].da_offset);
             for(k=0 ;k<4;k++){
-                 EMIF(AD2500_OFFSET_I(j,k))=*(data_tamp_ptr+3-k);
+                EMIF(AD2500_OFFSET_I(j,k))=*(data_tamp_ptr+3-k);
             }
 	    }
 
-    for(j=0 ;j<1;j++){
-        data_tamp_ptr =(unsigned short*)&(m_ad_variable.ad_linear1281.da_proportion);
-        for(k=0 ;k<4;k++){
-             EMIF(AD1281_PARAM_I(k))=*(data_tamp_ptr+3-k);
-        }
-        data_tamp_ptr =(unsigned short*)&(m_ad_variable.ad_linear1281.da_offset);
-        for(k=0 ;k<4;k++){
-             EMIF(AD1281_OFFSET_I(k))=*(data_tamp_ptr+3-k);
-        }
-    }
+    	for(j=0 ;j<4;j++){
+        	data_tamp_ptr =(unsigned short*)&(m_ad_variable.ad_linear1281[j].da_proportion);
+        	for(k=0 ;k<4;k++){
+            	EMIF(AD1281_PARAM_I(j,k))=*(data_tamp_ptr+3-k);
+        	}
+        	data_tamp_ptr =(unsigned short*)&(m_ad_variable.ad_linear1281[j].da_offset);
+       		for(k=0 ;k<4;k++){
+            	EMIF(AD1281_OFFSET_I(j,k))=*(data_tamp_ptr+3-k);
+        	}	
+    	}
 }
 void AD1281_init()
 {
@@ -193,7 +185,7 @@ void AD1281_init()
 	for(i=0;i<400;i++)
 		asm("	NOP");
 
-	//1281初始化首先复位
+	//1281??????????λ
 	EMIF(AD_RST_EN) = 0x0;
 	for(i=0;i<400;i++)
 		asm("	NOP");
@@ -203,13 +195,13 @@ void AD1281_init()
 		asm("	NOP");
 
 
-	//配置寄存器，开写使能
+	//???ü????????д???
 	EMIF(AD_REG_WR) = 0x01;
 	for(i=0;i<400;i++)
 		asm("	NOP");
 
-	//写寄存器，按照手册规定  每8位给一个cmd_en
-	//第1帧     停掉连续读数
+	//д??????????????涨  ?8λ?????cmd_en
+	//??1?     ???????????
 	EMIF(AD_COMMAND) = 0x11;
 	EMIF(AD_CMD_EN) = 0x01;
 	for(i=0;i<400;i++)
@@ -217,7 +209,7 @@ void AD1281_init()
 	EMIF(AD_CMD_EN) = 0x0;
 	for(i=0;i<500;i++)
 		asm("	NOP");
-	//第2帧      确定写寄存器首地址
+	//??2?      ???д?????????
 	EMIF(AD_COMMAND) = 0x41;
 	EMIF(AD_CMD_EN) = 0x01;
 	for(i=0;i<400;i++)
@@ -225,7 +217,7 @@ void AD1281_init()
 	EMIF(AD_CMD_EN) = 0x0;
 	for(i=0;i<500;i++)
 		asm("	NOP");
-	//第3帧     确定写寄存器个数为1
+	//??3?     ???д??????????1
 	EMIF(AD_COMMAND) = 0x0;
 	EMIF(AD_CMD_EN) = 0x01;
 	for(i=0;i<400;i++)
@@ -233,15 +225,15 @@ void AD1281_init()
 	EMIF(AD_CMD_EN) = 0x0;
 	for(i=0;i<500;i++)
 		asm("	NOP");
-	//第4帧     写哦寄存器的值
-	EMIF(AD_COMMAND) = 0x51;//51：32k 61：:128k
+	//??4?     д?????????
+	EMIF(AD_COMMAND) = 0x51;//51??32k 61??:128k
 	EMIF(AD_CMD_EN) = 0x01;
 	for(i=0;i<400;i++)
 		asm("	NOP");
 	EMIF(AD_CMD_EN) = 0x0;
 	for(i=0;i<500;i++)
 		asm("	NOP");
-	//第5帧      打开连续读
+	//??5?      ????????
 	EMIF(AD_COMMAND) = 0x10;
 	EMIF(AD_CMD_EN) = 0x01;
 	for(i=0;i<400;i++)
@@ -249,12 +241,12 @@ void AD1281_init()
 	EMIF(AD_CMD_EN) = 0x0;
 	for(i=0;i<500;i++)
 		asm("	NOP");
-	//写完关闭写使能
+	//д????д???
 	EMIF(AD_REG_WR) = 0x00;
 	for(i=0;i<400;i++)
 		asm("	NOP");
 
-	//开都市能
+	//????????
 	EMIF(AD_DAT_RD) = 0x01;
 	for(i=0;i<400;i++)
 		asm("	NOP");
@@ -285,7 +277,7 @@ void PID_init()
     double Kp=-0.6;
     unsigned short int temp=0;
     unsigned short* data_tamp_ptr=(unsigned short*)&(m_pid_struct.pid_kp);
-	////配置PID
+	////????PID
 		PID_KP_HH=*(data_tamp_ptr+3);// -1 bff0
 		PID_KP_HL=*(data_tamp_ptr+2);
 		PID_KP_LH=*(data_tamp_ptr+1);
@@ -301,7 +293,7 @@ void PID_init()
 		PID_KD_LH=*(data_tamp_ptr+1);
 		PID_KD_LL=*(data_tamp_ptr+0);
 
-	    temp  =  EMIF(FIFO_RST); //第0位：PID 复位，写1，不用写0
+	    temp  =  EMIF(FIFO_RST); //??0λ??PID ??λ??д1??????д0
 	            temp |= 1;
 	            EMIF(FIFO_RST)= temp;
 }

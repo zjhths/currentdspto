@@ -1,7 +1,7 @@
 /*
  * protocolanalyze.h
  *
- *  Created on: 2019Äê11ÔÂ24ÈÕ
+ *  Created on: 2019ï¿½ï¿½11ï¿½ï¿½24ï¿½ï¿½
  *      Author: Dell
  */
 #include "comm_factory.h"
@@ -12,8 +12,8 @@
 
 #define HOST_ADDR 0x52
 #define REMOTE_ADDR 0x53
-#define CHANNEL_ADDR 0x41//0x41~0x44ËÄ¸öÍ¨µÀ;
-#define CHANNEL_ALL_ADDR 0x45//0x45È«Í¨µÀ£»
+#define CHANNEL_ADDR 0x41//0x41~0x44ï¿½Ä¸ï¿½Í¨ï¿½ï¿½;
+#define CHANNEL_ALL_ADDR 0x45//0x45È«Í¨ï¿½ï¿½ï¿½ï¿½
 
 #define CMD_REST                                           0xFF
 #define CMD_RECV_AD                                    0x03
@@ -43,10 +43,10 @@
 
 #define NOR_FLASH_DATA_BASE              (0x60000000+128*0x8000)
 
-#define WAVE_FIXED           0x01 //¹Ì¶¨
-#define WAVE_RECTANG    0x02//·½
-#define WAVE_TRI               0x04//Èý½Ç
-#define WAVE_SIN              0x08//ÕýÏÒ
+#define WAVE_FIXED           0x01 //ï¿½Ì¶ï¿½
+#define WAVE_RECTANG    0x02//ï¿½ï¿½
+#define WAVE_TRI               0x04//ï¿½ï¿½ï¿½ï¿½
+#define WAVE_SIN              0x08//ï¿½ï¿½ï¿½ï¿½
 
 #pragma pack(1)
 
@@ -88,14 +88,14 @@ typedef struct protocol_rest_struct
     protocol_handle_struct m_handle;
 }protocol_rest_struct;
 
-//¹¤¿Ø»ú»ñÈ¡Í¨µÀÊý¾ÝÃüÁî
+//ï¿½ï¿½ï¿½Ø»ï¿½ï¿½ï¿½È¡Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 typedef struct protocol_ad_to_pc_cmd_struct
 {
     protocol_handle_struct m_handle;
     unsigned char channal;
 }protocol_ad_to_pc_cmd_struct;
 
-//Í¨µÀÏìÓ¦¹¤¿Ø»úÒªÊýÖ¸ÁîÐ­Òé
+//Í¨ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ø»ï¿½Òªï¿½ï¿½Ö¸ï¿½ï¿½Ð­ï¿½ï¿½
 typedef struct protocol_ad_to_pc_struct
 {
     unsigned char data_locality_addr;
@@ -105,7 +105,7 @@ typedef struct protocol_ad_to_pc_struct
     unsigned char temp[2];
 }protocol_ad_to_pc_struct;
 
-//¹¤¿Ø»úÅäÖÃ¹¤×÷Ä£Ê½
+//ï¿½ï¿½ï¿½Ø»ï¿½ï¿½ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½Ä£Ê½
 typedef struct protocol_ad_modle_set_struct
 {
     protocol_handle_struct m_handle;
@@ -127,7 +127,7 @@ typedef struct protocol_updata_variable_struct
     PID_Struct up_pid_struct;
 }protocol_updata_variable_struct;
 
-//++++++++++++++++Íâ²¿HDLCÃüÁî¼¯++++++++++++++++++++//
+//++++++++++++++++ï¿½â²¿HDLCï¿½ï¿½ï¿½î¼¯++++++++++++++++++++//
 typedef struct protocol_remote_struct
 {
     protocol_handle_struct m_handle;
@@ -149,11 +149,26 @@ typedef struct protocol_analyze_interface
     int da_input_fifo;
     int da_output_fifo;
 
+    int phase_input_fifo;
+    int phase_output_fifo;
+
+    int variable_input_fifo;
+    int variable_output_fifo;
+
+    int fusion_input_fifo;
+    int fusion_output_fifo;
+
+    int calib_input_fifo;
+    int calib_output_fifo;
+
+    int pid_input_fifo;
+    int pid_output_fifo;
+    
     void (*analyze)(struct protocol_analyze_interface* m_protocol_analyze);
 }protocol_analyze_interface;
 
 #pragma pack()
-//º¯Êý
+//ï¿½ï¿½ï¿½ï¿½
 void protocol_analyze(protocol_analyze_interface* interface);
 
 typedef int (*PF)(protocol_analyze_interface* interface,unsigned char* sources);

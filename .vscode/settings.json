@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "interface_da.h": "c",
+        "fpga.h": "c",
+        "init.h": "c",
+        "hw_types.h": "c"
+    }
+}

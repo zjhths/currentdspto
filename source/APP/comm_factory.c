@@ -3,6 +3,11 @@
 #include "comm_core_uart.h"
 #include "comm_core_ad.h"
 #include "comm_core_da.h"
+#include "comm_core_phase.h"
+#include "comm_core_variable.h"
+#include "comm_core_fusion.h"
+#include "comm_core_calib.h"
+#include "comm_core_pid.h"
 
 static void Core_speaker(struct Base_Core* core)
 {
@@ -48,6 +53,36 @@ Base_Core* create_new_Core(CoreType core_type)
 		base_core = real_core->core;
 		break;
 	}
+	case CORE_PHASE:
+	{
+		Phase_Core* real_core = new_Phase_Core();
+		base_core = real_core->core;
+		break;
+	}
+	case CORE_VARIABLE:
+	{
+	    Phase_Core* real_core = new_Phase_Core();
+		base_core = real_core->core;
+		break;
+	}
+	case CORE_FUSION:
+	{
+		Fusion_Core* real_core = new_Fusion_Core();
+		base_core = real_core->core;
+		break;
+	}
+	case CORE_CALIB:
+	{
+		Calib_Core* real_core = new_Calib_Core();
+		base_core = real_core->core;
+		break;
+	}
+	case CORE_PID:
+	{
+		Pid_Core* real_core = new_Pid_Core();
+		base_core = real_core->core;
+		break;
+	}
 	default:
 		break;
 	}
@@ -84,6 +119,37 @@ void delete_Base_Core(struct Base_Core* core)
 			core = NULL;
 			break;
 		}
+		case CORE_PHASE:
+		{
+			delete_Phase_Core((Phase_Core*)core->parent_core);
+			core = NULL;
+			break;
+		}
+		case CORE_VARIABLE:
+		{
+		    delete_Phase_Core((Phase_Core*)core->parent_core);
+			core = NULL;
+			break;
+		}
+		case CORE_FUSION:
+		{
+			delete_Fusion_Core((Fusion_Core*)core->parent_core);
+			core = NULL;
+			break;
+		}
+		case CORE_CALIB:
+		{
+			delete_Calib_Core((Calib_Core*)core->parent_core);
+			core = NULL;
+			break;
+		}
+		case CORE_PID:
+		{
+			delete_Pid_Core((Pid_Core*)core->parent_core);
+			core = NULL;
+			break;
+		}
+
 
 		default:
 			break;

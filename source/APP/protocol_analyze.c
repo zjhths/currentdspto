@@ -1,7 +1,7 @@
 /*
  * protocolanalyze.cpp
  *
- *  Created on: 2019Äê11ÔÂ24ÈÕ
+ *  Created on: 2019ï¿½ï¿½11ï¿½ï¿½24ï¿½ï¿½
  *      Author: Dell
  */
 
@@ -60,7 +60,7 @@ case PC_CMD_PID_STRUCT:
     return updata_pid_struct_func;
 case  PC_CMD_SYSTEM_STRUCT:
     return updata_system_struct_func;
-//Ô¶³Ì¼ÆËã»ú
+//Ô¶ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½
 case REMOTE_CMD_BEGIN:
    return remote_begin;
 
@@ -95,8 +95,8 @@ void protocol_analyze(protocol_analyze_interface* interface)
         commanda  = (protocol_handle_struct*)protocol_data_source;
         if((CHANNEL_ADDR != commanda->data_locality_addr) && (CHANNEL_ALL_ADDR != commanda->data_locality_addr))
            return ;
-       cmd_func = protocol_func_map(&commanda->cmd);
-       signal_list[cmd_func]++;
+        cmd_func = protocol_func_map(&commanda->cmd);
+        signal_list[cmd_func]++;
         func_type = (Analyze_Type)(cmd_func);
         returns_data_status=0;
     }
@@ -115,7 +115,7 @@ return 0;
 
 int protocol_recv_ad_cmd(protocol_analyze_interface* interface,unsigned char* sources){
     func_type = idle_func;
-   fifo_clear(interface->ad_input_fifo);
+    fifo_clear(interface->ad_input_fifo);
     return 0;
 }
 
@@ -167,11 +167,11 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
     memcpy(p_float,m_ad_modle_set->frequncy,4);
     p_float =( unsigned char *)&m_amplitude;
     memcpy(p_float,m_ad_modle_set->amplitude,4);
-    if(m_ad_modle_set->m_handle.cmd == 0x31)//ëŠÁ÷Ý”³ö
+    if(m_ad_modle_set->m_handle.cmd == 0x31)//ï¿½ï¿½ï¿½Ý”ï¿½ï¿½
     {
         DA_VI_SEL = 0;
         m_amplitude_tag = -50;
-    }else if(m_ad_modle_set->m_handle.cmd == 0x32)//ëŠ‰ºÁ¦Ý”³ö
+    }else if(m_ad_modle_set->m_handle.cmd == 0x32)//ëŠ‰ï¿½ï¿½ï¿½Ý”ï¿½ï¿½
     {
         DA_VI_SEL = 1;
         m_amplitude_tag = 1;
@@ -181,9 +181,9 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
     EMIF(CONTROL_BYPASS)= ~0x2;
     switch(m_ad_modle_set->wave)
     {
-    case 0x01://Èý½Ç²¨
+    case 0x01://ï¿½ï¿½ï¿½Ç²ï¿½
           int_frequncy = 64000/m_frequncy;
-          m_double = fabs(m_amplitude*m_amplitude_tag/1000);//µçÑ¹Ä£Ê½ÏÂ£ºvalue = Ä¿±êµçÑ¹£¨V£©£»µçÁ÷Ä£Ê½ÏÂvalue = -50 * Ä¿±êµçÁ÷£¨A£©
+          m_double = fabs(m_amplitude*m_amplitude_tag/1000);//ï¿½ï¿½Ñ¹Ä£Ê½ï¿½Â£ï¿½value = Ä¿ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½value = -50 * Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½
           p_float=( unsigned char *)&int_frequncy;
           TRIANGLE_FRQ=(unsigned short )int_frequncy;
 
@@ -202,9 +202,9 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
           DA_CONFIG_SEL=0X1;
           EMIF(CONTROL_BYPASS)=0x2;
         break;
-    case 0x02://·½²¨
+    case 0x02://ï¿½ï¿½ï¿½ï¿½
         int_frequncy =128000/m_frequncy/0.5;
-        m_double = fabs(m_amplitude*m_amplitude_tag/1000);//µçÑ¹Ä£Ê½ÏÂ£ºvalue = Ä¿±êµçÑ¹£¨V£©£»µçÁ÷Ä£Ê½ÏÂvalue = -50 * Ä¿±êµçÁ÷£¨A£©
+        m_double = fabs(m_amplitude*m_amplitude_tag/1000);//ï¿½ï¿½Ñ¹Ä£Ê½ï¿½Â£ï¿½value = Ä¿ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½value = -50 * Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½
         p_float=( unsigned char *)&int_frequncy;
         SQUARE_HIGH_DUTY=(unsigned short )int_frequncy;
         SQUARE_LOW_DUTY=(unsigned short )int_frequncy;
@@ -224,10 +224,10 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
         DA_CONFIG_SEL=0X1;
         EMIF(CONTROL_BYPASS)=0x2;
         break;
-    case 0x03://ÕýÏÒ²¨
+    case 0x03://ï¿½ï¿½ï¿½Ò²ï¿½
 
         int_frequncy = m_frequncy*pow(2,32)/128000;
-        m_double = fabs(m_amplitude*m_amplitude_tag/1000);//µçÑ¹Ä£Ê½ÏÂ£ºvalue = Ä¿±êµçÑ¹£¨V£©£»µçÁ÷Ä£Ê½ÏÂvalue = -50 * Ä¿±êµçÁ÷£¨A£©
+        m_double = fabs(m_amplitude*m_amplitude_tag/1000);//ï¿½ï¿½Ñ¹Ä£Ê½ï¿½Â£ï¿½value = Ä¿ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½value = -50 * Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½
         p_float=( unsigned char *)&int_frequncy;
         SIN_FRQ_H=*(unsigned short *)&p_float[2];
         SIN_FRQ_L=*(unsigned short *)&p_float[0];
@@ -243,9 +243,9 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
         DA_CONFIG_SEL=0X1;
         EMIF(CONTROL_BYPASS)=0x2;
         break;
-    case 0x04://Ö±Á÷
+    case 0x04://Ö±ï¿½ï¿½
         WAVE_SEL = 1; //fix_wave
-        m_double = m_amplitude*m_amplitude_tag/1000;//µçÑ¹Ä£Ê½ÏÂ£ºvalue = Ä¿±êµçÑ¹£¨V£©£»µçÁ÷Ä£Ê½ÏÂvalue = -50 * Ä¿±êµçÁ÷£¨A£©
+        m_double = m_amplitude*m_amplitude_tag/1000;//ï¿½ï¿½Ñ¹Ä£Ê½ï¿½Â£ï¿½value = Ä¿ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½value = -50 * Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½
         p_float=( unsigned char *)&m_double;
         SET_POINT_HH =*(unsigned short *)&p_float[6];
         SET_POINT_HL =*(unsigned short *)&p_float[4];
@@ -258,7 +258,7 @@ int protocol_set_mode(protocol_analyze_interface* interface,unsigned char* sourc
 
 
     }
-    temp  =  EMIF(FIFO_RST); //µÚ0Î»£ºPID ¸´Î»£¬Ð´1£¬²»ÓÃÐ´0
+    temp  =  EMIF(FIFO_RST); //ï¿½ï¿½0Î»ï¿½ï¿½PID ï¿½ï¿½Î»ï¿½ï¿½Ð´1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´0
             temp |= 1;
             EMIF(FIFO_RST)= temp;
     EMIF(CONTROL_BYPASS)= 0x0;

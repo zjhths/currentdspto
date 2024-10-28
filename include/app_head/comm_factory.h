@@ -17,11 +17,16 @@ typedef enum CoreType
     CORE_UART,
     CORE_AD,
     CORE_DA,
+	CORE_PHASE,
+	CORE_VARIABLE,
+	CORE_FUSION,
+	CORE_CALIB,
+	CORE_PID,
     CORE_NONE
 
 }CoreType;
 
-//ÀàËÆÓÚC++ »ùÀà
+//é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·C++ é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·
 typedef struct Base_Core
 {
 	CoreType core_type;
@@ -29,21 +34,21 @@ typedef struct Base_Core
 	int up_out_data_list;
     int down_in_data_list;
     int down_out_data_list;
-	void(*speaker)(struct Base_Core* core);		//ÀàËÆÓÚ»ùÀàĞéº¯Êı   º¯ÊıÖ¸Õë
-	void(*process)(struct Base_Core* core);     //ÀàËÆÓÚ»ùÀàĞéº¯Êı   º¯ÊıÖ¸Õë
-	void* parent_core;							//»ùÀàÖ¸Õë£¬Èç¹ûÃ»ÓĞ»ùÀà£¬ÔòÎªNULL
+	void(*speaker)(struct Base_Core* core);		//é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”ŸèŠ‚ä¼™æ‹·é”Ÿæ–¤æ‹·é”Ÿä»‹å‡½é”Ÿæ–¤æ‹·   é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·æŒ‡é”Ÿæ–¤æ‹·
+	void(*process)(struct Base_Core* core);     //é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”ŸèŠ‚ä¼™æ‹·é”Ÿæ–¤æ‹·é”Ÿä»‹å‡½é”Ÿæ–¤æ‹·   é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·æŒ‡é”Ÿæ–¤æ‹·
+	void* parent_core;							//é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·æŒ‡é”Ÿè¯«ï¼Œé”Ÿæ–¤æ‹·é”ŸçŸ«ä¼™æ‹·è°¢é”Ÿæ–¤æ‹·å•µî„Šæ‹·é”Ÿè½¿ç‹½ULL
 }Base_Core;
 
 
 
-//¹¤³§Àà
+//é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·
 typedef struct Core_Factory
 {
-	Base_Core* (*create_new_core)(CoreType core_type);	//´´½¨µÄ½Ó¿Ú£¬ÓÃ½Ó¿Ú¹ÌÌå·â×°ºÍÒş²ØÊµÏÖÏ¸½Ú
+	Base_Core* (*create_new_core)(CoreType core_type);	//é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿä¾¥æ¥å£ï½æ‹·é”ŸçŸ«æ¥å£ç™¸æ‹·é”Ÿæ–¤æ‹·é”Ÿé˜¶å¸®æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿç»ç¢‰æ‹·é”Ÿè¾ƒé©æ‹·é”Ÿï¿½
 }Core_Factory;
 
 
-//¹¤³§Ä£Ê½¹¹ÔìºÍÎö¹¹
+//é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·æ¨¡å¼é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿï¿½
 Core_Factory* new_core_factory();
 void delete_core_factory(Core_Factory* core_factory);
 

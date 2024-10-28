@@ -28,7 +28,7 @@
 //	#define	DA_CONFIG_SEL  		    (0x62000060)
 //电流电压模式
 //	#define	DA_VI_SEL  	    		(0x62000064)
-
+    
  //从第一通道到第1281通道
 	#define	 CHANNEL_SEL            (0x62000068)
 //ad通道直读数据
@@ -44,17 +44,17 @@
  #define          RMDATA(X)  (0x62000098+4*X)
 //2500、1281比例系数--电压
  #define          AD2500_PARAM_V(X,Y)  ((0x620000A8+4*(4*X+Y)))
- #define          AD1281_PARAM_V(X)     (0x620000F8+4*X)
+ #define          AD1281_PARAM_V(X,Y)  ((0x620000F8+4*(4*X+Y)))
 //2500、1281比例系数--电流
  #define          AD2500_PARAM_I(X,Y)  ((0x62000108+4*(4*X+Y)))
- #define          AD1281_PARAM_I(X)  (0x62000158+4*X)
+ #define          AD1281_PARAM_I(X,Y)  ((0x62000158+4*(4*X+Y)))
 //2500、1281偏置--电压
 
  #define          AD2500_OFFSET_V(X,Y)  ((0x62000168+4*(4*X+Y)))
- #define          AD1281_OFFSET_V(X)  (0x620001B8+4*X)
+ #define          AD1281_OFFSET_V(X,Y)  ((0x620001B8+4*(4*X+Y)))
 //2500、1281偏置--电流
  #define          AD2500_OFFSET_I(X,Y)  ((0x620001C8+4*(4*X+Y)))
- #define          AD1281_OFFSET_I(X)  (0x62000218+4*X)
+ #define          AD1281_OFFSET_I(X,Y)  ((0x62000218+4*(4*X+Y)))
 
 //2500配置寄存器
  #define          AD_2500_CFG_EN            (0x62000258)
